@@ -792,7 +792,9 @@ export enum Pkm {
   GOLETT = "GOLETT",
   GOLURK = "GOLURK",
   TRUBBISH = "TRUBBISH",
-  GARBODOR = "GARBODOR"
+  GARBODOR = "GARBODOR",
+  FALINKS = "FALINKS",
+  FALINKS_TROOPER = "FALINKS_TROOPER"
 }
 
 export const PkmIndex: { [key in Pkm]: string } = {
@@ -1587,7 +1589,9 @@ export const PkmIndex: { [key in Pkm]: string } = {
   [Pkm.GOLETT]: "0622",
   [Pkm.GOLURK]: "0623",
   [Pkm.TRUBBISH]: "0568",
-  [Pkm.GARBODOR]: "0569"
+  [Pkm.GARBODOR]: "0569",
+  [Pkm.FALINKS]: "0870-0001",
+  [Pkm.FALINKS_TROOPER]: "0870-0001"
 }
 
 export const PkmFamily: { [key in Pkm]: Pkm } = {
@@ -2382,7 +2386,9 @@ export const PkmFamily: { [key in Pkm]: Pkm } = {
   [Pkm.GOLETT]: Pkm.GOLETT,
   [Pkm.GOLURK]: Pkm.GOLETT,
   [Pkm.TRUBBISH]: Pkm.TRUBBISH,
-  [Pkm.GARBODOR]: Pkm.TRUBBISH
+  [Pkm.GARBODOR]: Pkm.TRUBBISH,
+  [Pkm.FALINKS]: Pkm.FALINKS,
+  [Pkm.FALINKS_TROOPER]: Pkm.FALINKS
 }
 
 export const PkmRegionalVariants: { [key in Pkm]?: Pkm[] } = {
@@ -6503,5 +6509,15 @@ export const AnimationConfig: {
     ability: AnimationType.Charge,
     emote: AnimationType.Idle,
     shinyUnavailable: true
+  },
+  [Pkm.FALINKS]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Idle
+  },
+  [Pkm.FALINKS_TROOPER]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Idle
   }
 }

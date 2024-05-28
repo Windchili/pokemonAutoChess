@@ -48,6 +48,7 @@ import { IdleState } from "./idle-state"
 import MovingState from "./moving-state"
 import PokemonState from "./pokemon-state"
 import Simulation from "./simulation"
+import { Falinks } from "../models/colyseus-models/pokemon"
 
 export class PokemonEntity extends Schema implements IPokemonEntity {
   @type("boolean") shiny: boolean

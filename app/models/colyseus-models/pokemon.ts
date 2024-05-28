@@ -51,6 +51,7 @@ import { pickRandomIn } from "../../utils/random"
 import { values } from "../../utils/schemas"
 import PokemonFactory from "../pokemon-factory"
 import Player from "./player"
+import { PokemonEntity } from "../../core/pokemon-entity"
 
 export class Pokemon extends Schema implements IPokemon {
   @type("string") id: string
@@ -13741,6 +13742,67 @@ export class Garbodor extends Pokemon {
   afterSimulationStart = Trubbish.prototype.afterSimulationStart
 }
 
+export class Falinks extends Pokemon {
+  types = new SetSchema<Synergy>([
+    Synergy.FIGHTING,
+    Synergy.NORMAL
+  ])
+  rarity = Rarity.COMMON
+  stars = 1
+  hp = 120
+  atk = 12
+  def = 4
+  speDef = 3
+  maxPP = 100
+  range = 1
+  skill = Ability.NO_RETREAT
+  passive = Passive.FALINKS
+  attackSprite = AttackSprite.FIGHTING_MELEE
+  evolution = Pkm.SQUIRTLE
+
+  troopCount = 0
+
+  beforeSimulationStart(){
+      this.troopCount = 0
+  }
+  
+  onWalk({ x, y, entity }: { x: number, y: number, entity: IPokemonEntity }){
+    if (this.troopCount < 3){
+      this.troopCount++;
+      const brass = entity as PokemonEntity
+      const trooper = PokemonFactory.createPokemonFromName(
+        Pkm.FALINKS_TROOPER,
+        brass.player
+      )
+      const newEntity = brass.simulation.addPokemon(
+        trooper,
+        x,
+        y,
+        entity.team,
+        true
+      )
+    }
+    
+  }
+}
+
+export class FalinksTrooper extends Pokemon {
+  types = new SetSchema<Synergy>([
+    Synergy.FIGHTING,
+    Synergy.NORMAL
+  ])
+  rarity = Rarity.SPECIAL
+  stars = 3
+  hp = 80
+  atk = 7
+  def = 3
+  speDef = 2
+  maxPP = 100
+  range = 1
+  skill = Ability.TACKLE
+  attackSprite = AttackSprite.FIGHTING_MELEE
+}
+
 export const PokemonClasses: Record<
   Pkm,
   new (
@@ -14539,5 +14601,7 @@ export const PokemonClasses: Record<
   [Pkm.GOLETT]: Golett,
   [Pkm.GOLURK]: Golurk,
   [Pkm.TRUBBISH]: Trubbish,
-  [Pkm.GARBODOR]: Garbodor
+  [Pkm.GARBODOR]: Garbodor,
+  [Pkm.FALINKS]: Falinks,
+  [Pkm.FALINKS_TROOPER]: FalinksTrooper
 }

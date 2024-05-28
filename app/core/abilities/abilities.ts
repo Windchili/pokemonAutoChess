@@ -65,6 +65,7 @@ import {
   shuffleArray
 } from "../../utils/random"
 import { values } from "../../utils/schemas"
+import { Falinks } from "../../models/colyseus-models/pokemon"
 
 export class BlueFlareStrategy extends AbilityStrategy {
   process(
@@ -8784,6 +8785,40 @@ export class GunkShotStrategy extends AbilityStrategy {
   }
 }
 
+export class NoRetreatStrategy extends AbilityStrategy {
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+    let troopCount = 1
+    if (pokemon.name == Pkm.FALINKS){
+      const falinks = pokemon.refToBoardPokemon as Falinks
+      troopCount = falinks.troopCount
+    }
+    //const troopCount = falinks.getTroopNumber()?1
+    pokemon.addAttack(troopCount, pokemon, 1, false)
+    pokemon.addDefense(troopCount, pokemon, 1, false)
+    pokemon.addSpecialDefense(troopCount, pokemon, 1, false)
+    pokemon.addAbilityPower(troopCount*0.08, pokemon, 1, false)
+  }
+}
+
+export class TackleStrategy extends AbilityStrategy {
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    target.handleSpecialDamage(20, board, AttackType.PHYSICAL, pokemon, crit)
+  }
+}
+
 export * from "./hidden-power"
 
 export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
@@ -9115,5 +9150,7 @@ export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
   [Ability.BLOOD_MOON]: new BloodMoonStrategy(),
   [Ability.TEA_TIME]: new TeaTimeStrategy(),
   [Ability.SPIKES]: new SpikesStrategy(),
-  [Ability.SHADOW_PUNCH]: new ShadowPunchStrategy()
+  [Ability.SHADOW_PUNCH]: new ShadowPunchStrategy(),
+  [Ability.NO_RETREAT]: new NoRetreatStrategy(),
+  [Ability.TACKLE]: new TackleStrategy()
 }

@@ -349,7 +349,9 @@
     "BLOOD_MOON": "Blood moon",
     "TEA_TIME": "Tea Time",
     "SPIKES": "Spikes",
-    "SHADOW_PUNCH": "Shadow Punch"
+    "SHADOW_PUNCH": "Shadow Punch",
+    "NO_RETREAT": "No Retreat",
+    "TACKLE": "Tackle"
   },
   "pkm": {
     "DEFAULT": "MissingNo.",
@@ -1144,7 +1146,9 @@
     "FERROSEED": "Ferroseed",
     "FERROTHORN": "Ferrothorn",
     "GOLETT": "Golett",
-    "GOLURK": "Golurk"
+    "GOLURK": "Golurk",
+    "FALINKS": "Falinks (Brass)",
+    "FALINKS_TROOPER": "Falinks (Trooper)"
   },
   "ability_description": {
     "SOFT_BOILED": "Cures all status effects and grants [20,40,80,SP] SHIELD to every allied Pokémon",
@@ -1474,7 +1478,9 @@
     "TEA_TIME": "Heal allies [20,40,80,SP] HP. All pokemons holding a berry eat it immediately.",
     "SPIKES": "Throw up up to [6, SP] metal spikes within a 3-cell radius in front, dealing [25,50,SP] TRUE. The spikes stay on field, dealing 10 TRUE per second and ARMOR_REDUCTION to opponents that walk on it, if not FLYING.",
     "SHADOW_PUNCH": "Fly towards the target with the lowest HP. The next attack deals additional [30,60,120,SP] SPECIAL.",
-    "GUNK_SHOT": "Deal [50,100,SP] SPECIAL to the target, inflicting POISONNED for [2,4,SP] seconds"
+    "GUNK_SHOT": "Deal [50,100,SP] SPECIAL to the target, inflicting POISONNED for [2,4,SP] seconds",
+    "NO_RETREAT": "Gain 1 ATK, DEF, SPE_DEF and 8% AP per trooper in formation.",
+    "TACKLE": "Deal 20 PHYSICAL to the target."
 
   },
   "effect": {
@@ -1991,7 +1997,8 @@
     "MOTHIM": "Mothim gets the synergies of all your regional Burmy forms",
     "PSYDUCK": "When CONFUSION, gain 100% AP",
     "BLOODMOON": "Changes form during BLOODMOON",
-    "RECYCLE": "Feed it with berries to gain 10 HP, or with basic components for 25 HP + item stats. Feed it with artificial items to gain 50 HP + item stats, and get TRASH in return"
+    "RECYCLE": "Feed it with berries to gain 10 HP, or with basic components for 25 HP + item stats. Feed it with artificial items to gain 50 HP + item stats, and get TRASH in return",
+    "FALINKS": "Move to spawn up to 5 Troopers. They will remain in your formation until broken off from the chain."
   },
   "stat": {
     "ATK": "Attack",
