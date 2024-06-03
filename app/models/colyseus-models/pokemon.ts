@@ -18,25 +18,30 @@ import {
   IPlayer,
   IPokemon,
   IPokemonEntity,
-  Title,
+  Title
 } from "../../types"
 import {
   DEFAULT_ATK_SPEED,
   DEFAULT_CRIT_CHANCE,
   DEFAULT_CRIT_POWER,
   EvolutionTime,
-  SynergyTriggers,
-  ItemStats
+  ItemStats,
+  SynergyTriggers
 } from "../../types/Config"
 import { Ability } from "../../types/enum/Ability"
 import { DungeonDetails, DungeonPMDO } from "../../types/enum/Dungeon"
-import { AttackType, PokemonActionState, Rarity, Stat } from "../../types/enum/Game"
+import {
+  AttackType,
+  PokemonActionState,
+  Rarity,
+  Stat
+} from "../../types/enum/Game"
 import {
   AllItems,
-  Berries,
-  ItemComponents,
   ArtificialItems,
+  Berries,
   Item,
+  ItemComponents,
   ItemRecipe,
   SynergyItems
 } from "../../types/enum/Item"
@@ -135,7 +140,6 @@ export class Pokemon extends Schema implements IPokemon {
       const garbodor: Garbodor = params.pokemonEvolved as Garbodor
     }
     // called after evolving
-    
   }
 
   beforeSimulationStart(params: {
@@ -1745,7 +1749,7 @@ export class Deino extends Pokemon {
   atk = 6
   def = 2
   speDef = 2
-  maxPP = 50
+  maxPP = 100
   range = 2
   skill = Ability.DARK_HARVEST
   attackSprite = AttackSprite.DARK_RANGE
@@ -6096,7 +6100,9 @@ export class Deoxys extends Pokemon {
   attackSprite = AttackSprite.PSYCHIC_MELEE
   passive = Passive.ALIEN_DNA
   onAcquired(player: Player) {
-    player.items.push(Item.METEORITE)
+    if (player.items.includes(Item.METEORITE) === false) {
+      player.items.push(Item.METEORITE)
+    }
   }
 }
 
@@ -6118,7 +6124,9 @@ export class DeoxysDefense extends Pokemon {
   attackSprite = AttackSprite.PSYCHIC_MELEE
   passive = Passive.ALIEN_DNA
   onAcquired(player: Player) {
-    player.items.push(Item.METEORITE)
+    if (player.items.includes(Item.METEORITE) === false) {
+      player.items.push(Item.METEORITE)
+    }
   }
 }
 
@@ -6140,7 +6148,9 @@ export class DeoxysAttack extends Pokemon {
   attackSprite = AttackSprite.PSYCHIC_RANGE
   passive = Passive.ALIEN_DNA
   onAcquired(player: Player) {
-    player.items.push(Item.METEORITE)
+    if (player.items.includes(Item.METEORITE) === false) {
+      player.items.push(Item.METEORITE)
+    }
   }
 }
 
@@ -6162,7 +6172,9 @@ export class DeoxysSpeed extends Pokemon {
   attackSprite = AttackSprite.PSYCHIC_RANGE
   passive = Passive.ALIEN_DNA
   onAcquired(player: Player) {
-    player.items.push(Item.METEORITE)
+    if (player.items.includes(Item.METEORITE) === false) {
+      player.items.push(Item.METEORITE)
+    }
   }
 }
 
@@ -13224,6 +13236,7 @@ export class BurmyTrash extends Pokemon {
     const regionSynergies = DungeonDetails[map]?.synergies
     return (
       regionSynergies.includes(Synergy.ARTIFICIAL) &&
+      !regionSynergies.includes(Synergy.GROUND) &&
       !regionSynergies.includes(Synergy.GRASS)
     )
   }
@@ -13317,12 +13330,9 @@ export class Mothim extends Pokemon {
   stages = 3
   regional = true
   isInRegion(pkm: Pkm, map: DungeonPMDO, state?: GameState) {
-    const regionSynergies = DungeonDetails[map]?.synergies
-    return (
-      regionSynergies.includes(Synergy.GRASS) ||
-      regionSynergies.includes(Synergy.GROUND) ||
-      regionSynergies.includes(Synergy.ARTIFICIAL)
-    )
+    // always hide mothim to avoid showing duplicated with other burmy forms
+    // this does not impact the evolution of wormadam
+    return false
   }
   onAcquired(player: Player) {
     if (player.regionalPokemons.includes(Pkm.BURMY_PLANT)) {
@@ -13593,80 +13603,64 @@ export class Trubbish extends Pokemon {
   additional = true
 
   defaultValues = {
-    [Stat.HP] : this.hp,
-    [Stat.ATK] : this.atk,
-    [Stat.DEF] : this.def,
-    [Stat.SPE_DEF] : this.speDef,
+    [Stat.HP]: this.hp,
+    [Stat.ATK]: this.atk,
+    [Stat.DEF]: this.def,
+    [Stat.SPE_DEF]: this.speDef
   }
 
   statIncreases = {
-    [Stat.HP] : 0,
-    [Stat.ATK] : 0,
-    [Stat.ATK_SPEED] : 0,
-    [Stat.AP] : 0,
-    [Stat.DEF] : 0,
-    [Stat.SPE_DEF] : 0,
-    [Stat.CRIT_CHANCE] : 0,
-    [Stat.PP] : 0,
-    [Stat.SHIELD] : 0
+    [Stat.HP]: 0,
+    [Stat.ATK]: 0,
+    [Stat.ATK_SPEED]: 0,
+    [Stat.AP]: 0,
+    [Stat.DEF]: 0,
+    [Stat.SPE_DEF]: 0,
+    [Stat.CRIT_CHANCE]: 0,
+    [Stat.PP]: 0,
+    [Stat.SHIELD]: 0
   }
 
   beforeSimulationStart({ player }: { player: Player }) {
-    this.items.forEach((item) => {
+    values(this.items).forEach((item) => {
       if (Berries.includes(item)) {
         this.statIncreases[Stat.HP] += 10
+        this.items.delete(item)
       }
       if (ItemComponents.includes(item)) {
         this.statIncreases[Stat.HP] += 25
+        if (ItemStats[item]) {
+          Object.entries(ItemStats[item]).forEach(
+            ([stat, value]) => (this.statIncreases[stat as Stat] += value)
+          )
+        }
+        this.items.delete(item)
       }
       if (ArtificialItems.includes(item)) {
         this.statIncreases[Stat.HP] += 50
+        this.items.delete(item)
 
         const itemIndex = player.artificialItems.indexOf(item)
         player.artificialItems[itemIndex] = Item.TRASH
         player.items.push(player.artificialItems[itemIndex])
       }
     })
+
+    // Update permanent stats
     this.hp = this.defaultValues[Stat.HP] + this.statIncreases[Stat.HP]
+    this.atk = this.defaultValues[Stat.ATK] + this.statIncreases[Stat.ATK]
+    this.def = this.defaultValues[Stat.DEF] + this.statIncreases[Stat.DEF]
+    this.speDef =
+      this.defaultValues[Stat.SPE_DEF] + this.statIncreases[Stat.SPE_DEF]
   }
 
   afterSimulationStart({ entity }: { entity: IPokemonEntity }) {
-
     // Add non-permanent stats to Trubbish
     entity.addAbilityPower(this.statIncreases[Stat.AP], entity, 0, false)
     entity.addShield(this.statIncreases[Stat.SHIELD], entity, 0, false)
     entity.addCritChance(this.statIncreases[Stat.CRIT_CHANCE], entity, 0, false)
     entity.addPP(this.statIncreases[Stat.PP], entity, 0, false)
     entity.addAttackSpeed(this.statIncreases[Stat.ATK_SPEED], entity, 0, false)
-
-    entity.items.forEach((item) => {
-      if (
-        ItemComponents.includes(item) ||
-        ArtificialItems.includes(item) ||
-        Berries.includes(item)
-      ) {
-        // Add item Stats
-        if (ItemStats[item]) {
-          Object.entries(ItemStats[item]).forEach(
-            ([stat, value]) => (this.statIncreases[stat as Stat] += value)
-          )
-        }
-
-        // Delete item
-        entity.items.delete(item)
-        entity.refToBoardPokemon.items.delete(item)
-      }
-    })
-
-    // Update permanent stats
-    entity.refToBoardPokemon.hp =
-      this.defaultValues[Stat.HP] + this.statIncreases[Stat.HP]
-    entity.refToBoardPokemon.atk =
-      this.defaultValues[Stat.ATK] + this.statIncreases[Stat.ATK]
-    entity.refToBoardPokemon.def =
-      this.defaultValues[Stat.DEF] + this.statIncreases[Stat.DEF]
-    entity.refToBoardPokemon.speDef =
-      this.defaultValues[Stat.SPE_DEF] + this.statIncreases[Stat.SPE_DEF]
   }
 
   onEvolve({
@@ -13677,7 +13671,8 @@ export class Trubbish extends Pokemon {
     pokemonsBeforeEvolution: Pokemon[]
   }) {
     // Carry over the stats gained with passive
-    const trubbishStats = {
+    const garbodor = garbodorObj as Garbodor
+    garbodor.statIncreases = {
       [Stat.HP]: 0,
       [Stat.ATK]: 0,
       [Stat.ATK_SPEED]: 0,
@@ -13688,15 +13683,14 @@ export class Trubbish extends Pokemon {
       [Stat.PP]: 0,
       [Stat.SHIELD]: 0
     }
+
     trubbishes.forEach((trubbishObj) => {
       const trubbish = trubbishObj as Trubbish
-      for (const key in trubbishStats) {
-        trubbishStats[key] += trubbish.statIncreases[key]
+      for (const key in garbodor.statIncreases) {
+        garbodor.statIncreases[key] += trubbish.statIncreases[key]
       }
+    })
 
-    });
-    const garbodor = garbodorObj as Garbodor
-    garbodor.statIncreases = trubbishStats
     garbodor.hp += garbodor.statIncreases[Stat.HP]
     garbodor.atk += garbodor.statIncreases[Stat.ATK]
     garbodor.def += garbodor.statIncreases[Stat.DEF]
@@ -13718,24 +13712,24 @@ export class Garbodor extends Pokemon {
   passive = Passive.RECYCLE
   attackSprite = AttackSprite.POISON_MELEE
   additional = true
-  
+
   statIncreases = {
-    [Stat.HP] : 0,
-    [Stat.ATK] : 0,
-    [Stat.ATK_SPEED] : 0,
-    [Stat.AP] : 0,
-    [Stat.DEF] : 0,
-    [Stat.SPE_DEF] : 0,
-    [Stat.CRIT_CHANCE] : 0,
-    [Stat.PP] : 0,
-    [Stat.SHIELD] : 0
+    [Stat.HP]: 0,
+    [Stat.ATK]: 0,
+    [Stat.ATK_SPEED]: 0,
+    [Stat.AP]: 0,
+    [Stat.DEF]: 0,
+    [Stat.SPE_DEF]: 0,
+    [Stat.CRIT_CHANCE]: 0,
+    [Stat.PP]: 0,
+    [Stat.SHIELD]: 0
   }
 
   defaultValues = {
-    [Stat.HP] : this.hp,
-    [Stat.ATK] : this.atk,
-    [Stat.DEF] : this.def,
-    [Stat.SPE_DEF] : this.speDef
+    [Stat.HP]: this.hp,
+    [Stat.ATK]: this.atk,
+    [Stat.DEF]: this.def,
+    [Stat.SPE_DEF]: this.speDef
   }
 
   beforeSimulationStart = Trubbish.prototype.beforeSimulationStart

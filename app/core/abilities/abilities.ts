@@ -891,8 +891,8 @@ export class ElectroWebStrategy extends AbilityStrategy {
       .forEach((cell) => {
         if (cell.value && cell.value.team !== pokemon.team) {
           cell.value.handleSpecialDamage(damage, board, AttackType.SPECIAL, pokemon, crit)
-          cell.value.addAttackSpeed(-steal, pokemon, 0, false)
-          pokemon.addAttackSpeed(steal, pokemon, 0, false)
+          cell.value.addAttackSpeed(-steal, pokemon, 1, crit)
+          pokemon.addAttackSpeed(steal, pokemon, 1, crit)
         }
       })
   }
@@ -2086,7 +2086,7 @@ export class SeedFlareStrategy extends AbilityStrategy {
 
     board.forEach((x: number, y: number, tg: PokemonEntity | undefined) => {
       if (tg && pokemon.team != tg.team) {
-        tg.addSpecialDefense(-2, pokemon, 1, crit)
+        tg.addSpecialDefense(-2, pokemon, 0, false)
         tg.handleSpecialDamage(damage, board, AttackType.SPECIAL, pokemon, crit)
       }
     })
@@ -2780,7 +2780,7 @@ export class CosmicPowerStrategy extends AbilityStrategy {
     const apGain = 20
     board.forEach((x, y, ally) => {
       if (ally && ally.team === pokemon.team) {
-        ally.addAbilityPower(apGain, pokemon, 1, true)
+        ally.addAbilityPower(apGain, pokemon, 1, crit)
       }
     })
   }
@@ -2863,7 +2863,7 @@ export class IronTailStrategy extends AbilityStrategy {
       damage = 80
       buff = 5
     }
-    pokemon.addDefense(buff, pokemon, 1, crit)
+    pokemon.addDefense(buff, pokemon, 0, false)
     target.handleSpecialDamage(damage, board, AttackType.SPECIAL, pokemon, crit)
   }
 }
@@ -2942,12 +2942,15 @@ export class SludgeStrategy extends AbilityStrategy {
   ) {
     super.process(pokemon, state, board, target, crit)
     const nbStacks = pokemon.stars === 1 ? 2 : pokemon.stars === 2 ? 3 : 4
+    const duration = Math.round(
+      3000 * (1 + pokemon.ap / 100) * (crit ? pokemon.critPower : 1)
+    )
     const cells = board.getCellsInFront(pokemon, target)
 
     cells.forEach((cell) => {
       if (cell.value && pokemon.team != cell.value.team) {
         for (let i = 0; i < nbStacks; i++) {
-          cell.value.status.triggerPoison(3000, cell.value, pokemon)
+          cell.value.status.triggerPoison(duration, cell.value, pokemon)
         }
       }
     })
@@ -3554,7 +3557,7 @@ export class ShadowBallStrategy extends AbilityStrategy {
 
     board.forEach((x: number, y: number, v: PokemonEntity | undefined) => {
       if (v && pokemon.team != v.team) {
-        v.addSpecialDefense(-1, pokemon, 1, crit)
+        v.addSpecialDefense(-1, pokemon, 0, false)
       }
     })
   }
@@ -4502,7 +4505,7 @@ export class GeomancyStrategy extends AbilityStrategy {
     super.process(pokemon, state, board, target, crit)
     pokemon.addAttack(15, pokemon, 1, crit)
     pokemon.addSpecialDefense(5, pokemon, 1, crit)
-    pokemon.addAttackSpeed(20, pokemon, 1, crit)
+    pokemon.addAttackSpeed(20, pokemon, 0, false)
   }
 }
 
@@ -8651,7 +8654,7 @@ export class PsyShockStrategy extends AbilityStrategy {
   ) {
     super.process(pokemon, state, board, target, crit, true)
     const ppBurn = [30, 60, 100][pokemon.stars - 1] ?? 100
-    const ppStolen = min(ppBurn)(target.pp)
+    const ppStolen = max(target.pp)(ppBurn)
     const extraPP = ppBurn - ppStolen
 
     target.addPP(-ppStolen, pokemon, 1, crit)
@@ -8714,8 +8717,8 @@ export class RapidSpinStrategy extends AbilityStrategy {
 
     target.handleSpecialDamage(damage, board, AttackType.SPECIAL, pokemon, crit)
 
-    pokemon.addDefense(buffAmount, pokemon, 0, false)
-    pokemon.addSpecialDefense(buffAmount, pokemon, 0, false)
+    pokemon.addDefense(buffAmount, pokemon, 1, true)
+    pokemon.addSpecialDefense(buffAmount, pokemon, 1, true)
   }
 }
 
