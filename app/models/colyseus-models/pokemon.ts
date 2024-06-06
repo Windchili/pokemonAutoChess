@@ -13760,10 +13760,10 @@ export class Falinks extends Pokemon {
       this.troopCount = 0
   }
   
-  onWalk({ x, y, entity }: { x: number, y: number, entity: IPokemonEntity }){
-    if (this.troopCount < 3){
+  onWalk({ x, y, brass }: { x: number, y: number, brass: PokemonEntity }){
+    if (this.troopCount < 5){
       this.troopCount++;
-      const brass = entity as PokemonEntity
+      //const brass = entity as PokemonEntity
       const trooper = PokemonFactory.createPokemonFromName(
         Pkm.FALINKS_TROOPER,
         brass.player
@@ -13772,7 +13772,7 @@ export class Falinks extends Pokemon {
         trooper,
         x,
         y,
-        entity.team,
+        brass.team,
         true
       )
     }

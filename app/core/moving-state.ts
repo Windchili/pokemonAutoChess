@@ -1,4 +1,5 @@
 import Player from "../models/colyseus-models/player"
+import { Falinks } from "../models/colyseus-models/pokemon"
 import { Transfer } from "../types"
 import { Effect } from "../types/enum/Effect"
 import { BoardEvent, PokemonActionState } from "../types/enum/Game"
@@ -139,6 +140,10 @@ export default class MovingState extends PokemonState {
           undefined
         )
         // logger.debug(`pokemon ${pokemon.name} moved from (${pokemon.positionX},${pokemon.positionY}) to (${x},${y}), (desired direction (${coordinates.x}, ${coordinates.y})), orientation: ${pokemon.orientation}`);
+        if(pokemon.passive === Passive.FALINKS){
+          let falinksBrass = pokemon.refToBoardPokemon as Falinks
+          falinksBrass.onWalk({x: x, y: y, brass: pokemon})
+        }
         board.swapValue(pokemon.positionX, pokemon.positionY, x, y)
       }
     }

@@ -1,4 +1,5 @@
 import Player from "../models/colyseus-models/player"
+import { Falinks } from "../models/colyseus-models/pokemon"
 import { Effect } from "../types/enum/Effect"
 import { AttackType, PokemonActionState } from "../types/enum/Game"
 import { Item } from "../types/enum/Item"
@@ -84,6 +85,26 @@ export default class AttackingState extends PokemonState {
           target,
           crit
         )
+      } else if (pokemon.passive === Passive.FALINKS && (pokemon.refToBoardPokemon as Falinks).troopCount < 5) {
+        // This is the problem line
+        //let emptyTarget = this.getFarthestTarget(
+        //  pokemon, 
+        //  board
+        //)
+        //if (emptyTarget){
+          // moveTo is also problematic
+          //pokemon.moveTo(emptyTarget.x, emptyTarget.y, board)
+        //target = this.getFarthestTarget(pokemon, board)
+        target = this.getFarthestTarget(
+          pokemon,
+          board
+        )
+        
+        if(target){
+          pokemon.toMovingState()
+        }
+        
+        
       } else {
         // BASIC ATTACK
         pokemon.count.attackCount++
