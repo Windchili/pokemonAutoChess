@@ -9,7 +9,8 @@ import {
   Item,
   ItemRecipe,
   SpecialItems,
-  ShinyItems
+  ShinyItems,
+  WeatherRocks
 } from "../../../../../types/enum/Item"
 import { Synergy } from "../../../../../types/enum/Synergy"
 import { ItemDetailTooltip } from "../../../game/components/item-detail"
@@ -129,8 +130,9 @@ export default function WikiItems() {
             </li>
           ))}
         </ul>
-
-        {/*<h2>{t("weather_rocks")}</h2>
+        <h2>
+          <SynergyIcon type={Synergy.ROCK} /> {t("weather_rocks")}
+        </h2>
         <ul className="weather-rocks">
           {WeatherRocks.map((i) => (
             <li
@@ -141,8 +143,7 @@ export default function WikiItems() {
               <img src={"assets/item/" + i + ".png"} className="item"></img>
             </li>
           ))}
-        </ul>*/}
-
+        </ul>
         <h2>{t("shiny_items")}</h2>
         <ul className="shiny">
           {ShinyItems.map((i) => (
