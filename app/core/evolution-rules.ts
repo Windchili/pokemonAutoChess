@@ -69,7 +69,8 @@ export class CountEvolutionRule extends EvolutionRule {
   }
 
   canEvolve(pokemon: Pokemon, player: Player, stageLevel: number): boolean {
-    if (pokemon.evolution === Pkm.DEFAULT) return false
+    if (pokemon.evolution === Pkm.DEFAULT || pokemon.items.has(Item.EVIOLITE))
+      return false
     const count = values(player.board).filter(
       (pkm) => pkm.index === pokemon.index
     ).length
@@ -77,7 +78,8 @@ export class CountEvolutionRule extends EvolutionRule {
   }
 
   canEvolveIfBuyingOne(pokemon: Pokemon, player: Player): boolean {
-    if (pokemon.evolution === Pkm.DEFAULT) return false
+    if (pokemon.evolution === Pkm.DEFAULT || pokemon.items.has(Item.EVIOLITE))
+      return false
     const count = values(player.board).filter(
       (pkm) => pkm.index === pokemon.index
     ).length
@@ -176,9 +178,21 @@ export class ItemEvolutionRule extends EvolutionRule {
   }
 
   canEvolve(pokemon: Pokemon, player: Player, stageLevel: number): boolean {
-    return values(pokemon.items).some((item) =>
+    if (pokemon.items.has(Item.EVIOLITE)) return false
+    const itemEvolution = values(pokemon.items).find((item) =>
       this.itemsTriggeringEvolution.includes(item)
     )
+
+    let pokemonEvolutionName = pokemon.evolution
+    if (this.divergentEvolution && itemEvolution) {
+      pokemonEvolutionName = this.divergentEvolution(
+        pokemon,
+        player,
+        itemEvolution
+      )
+    }
+
+    return itemEvolution != null && pokemonEvolutionName !== pokemon.name
   }
 
   evolve(pokemon: Pokemon, player: Player, stageLevel: number): Pokemon {
@@ -232,6 +246,7 @@ export class HatchEvolutionRule extends EvolutionRule {
   }
 
   canEvolve(pokemon: Pokemon, player: Player, stageLevel: number): boolean {
+    if (pokemon.items.has(Item.EVIOLITE)) return false
     return this.evolutionTimer === 0
   }
 
@@ -265,6 +280,7 @@ export class ConditionBasedEvolutionRule extends EvolutionRule {
   }
 
   canEvolve(pokemon: Pokemon, player: Player, stageLevel: number): boolean {
+    if (pokemon.items.has(Item.EVIOLITE)) return false
     return this.condition(pokemon, player, stageLevel)
   }
 

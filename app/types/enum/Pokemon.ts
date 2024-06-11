@@ -167,6 +167,7 @@ export enum Pkm {
   SCYTHER = "SCYTHER",
   SCIZOR = "SCIZOR",
   MEGA_SCIZOR = "MEGA_SCIZOR",
+  KLEAVOR = "KLEAVOR",
   RIOLU = "RIOLU",
   LUCARIO = "LUCARIO",
   MAGIKARP = "MAGIKARP",
@@ -794,7 +795,16 @@ export enum Pkm {
   TRUBBISH = "TRUBBISH",
   GARBODOR = "GARBODOR",
   FALINKS = "FALINKS",
-  FALINKS_TROOPER = "FALINKS_TROOPER"
+  FALINKS_TROOPER = "FALINKS_TROOPER",
+  GRUBBIN = "GRUBBIN",
+  CHARJABUG = "CHARJABUG",
+  VIKAVOLT = "VIKAVOLT",
+  SHELLOS_WEST_SEA = "SHELLOS_WEST_SEA",
+  GASTRODON_WEST_SEA = "GASTRODON_WEST_SEA",
+  SHELLOS_EAST_SEA = "SHELLOS_EAST_SEA",
+  GASTRODON_EAST_SEA = "GASTRODON_EAST_SEA",
+  MUNNA = "MUNNA",
+  MUSHARNA = "MUSHARNA"
 }
 
 export const PkmIndex: { [key in Pkm]: string } = {
@@ -967,6 +977,7 @@ export const PkmIndex: { [key in Pkm]: string } = {
   [Pkm.SCYTHER]: "0123",
   [Pkm.SCIZOR]: "0212",
   [Pkm.MEGA_SCIZOR]: "0212-0001",
+  [Pkm.KLEAVOR]: "0900",
   [Pkm.RIOLU]: "0447",
   [Pkm.LUCARIO]: "0448",
   [Pkm.MAGIKARP]: "0129",
@@ -1591,7 +1602,16 @@ export const PkmIndex: { [key in Pkm]: string } = {
   [Pkm.TRUBBISH]: "0568",
   [Pkm.GARBODOR]: "0569",
   [Pkm.FALINKS]: "0870-0001",
-  [Pkm.FALINKS_TROOPER]: "0870-0001"
+  [Pkm.FALINKS_TROOPER]: "0870-0001",
+  [Pkm.GRUBBIN]: "0736",
+  [Pkm.CHARJABUG]: "0737",
+  [Pkm.VIKAVOLT]: "0738",
+  [Pkm.SHELLOS_WEST_SEA]: "0422",
+  [Pkm.GASTRODON_WEST_SEA]: "0423",
+  [Pkm.SHELLOS_EAST_SEA]: "0422-0001",
+  [Pkm.GASTRODON_EAST_SEA]: "0423-0001",
+  [Pkm.MUNNA]: "0517",
+  [Pkm.MUSHARNA]: "0518"
 }
 
 export const PkmFamily: { [key in Pkm]: Pkm } = {
@@ -1761,6 +1781,7 @@ export const PkmFamily: { [key in Pkm]: Pkm } = {
   [Pkm.SCYTHER]: Pkm.SCYTHER,
   [Pkm.SCIZOR]: Pkm.SCYTHER,
   [Pkm.MEGA_SCIZOR]: Pkm.SCYTHER,
+  [Pkm.KLEAVOR]: Pkm.KLEAVOR,
   [Pkm.RIOLU]: Pkm.RIOLU,
   [Pkm.LUCARIO]: Pkm.RIOLU,
   [Pkm.EEVEE]: Pkm.EEVEE,
@@ -2388,7 +2409,16 @@ export const PkmFamily: { [key in Pkm]: Pkm } = {
   [Pkm.TRUBBISH]: Pkm.TRUBBISH,
   [Pkm.GARBODOR]: Pkm.TRUBBISH,
   [Pkm.FALINKS]: Pkm.FALINKS,
-  [Pkm.FALINKS_TROOPER]: Pkm.FALINKS
+  [Pkm.FALINKS_TROOPER]: Pkm.FALINKS,
+  [Pkm.GRUBBIN]: Pkm.GRUBBIN,
+  [Pkm.CHARJABUG]: Pkm.GRUBBIN,
+  [Pkm.VIKAVOLT]: Pkm.GRUBBIN,
+  [Pkm.SHELLOS_WEST_SEA]: Pkm.SHELLOS_WEST_SEA,
+  [Pkm.GASTRODON_WEST_SEA]: Pkm.SHELLOS_WEST_SEA,
+  [Pkm.SHELLOS_EAST_SEA]: Pkm.SHELLOS_EAST_SEA,
+  [Pkm.GASTRODON_EAST_SEA]: Pkm.SHELLOS_EAST_SEA,
+  [Pkm.MUNNA]: Pkm.MUNNA,
+  [Pkm.MUSHARNA]: Pkm.MUNNA
 }
 
 export const PkmRegionalVariants: { [key in Pkm]?: Pkm[] } = {
@@ -3350,6 +3380,11 @@ export const AnimationConfig: {
     emote: AnimationType.Shoot
   },
   [Pkm.MEGA_SCIZOR]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Attack,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.KLEAVOR]: {
     attack: AnimationType.Attack,
     ability: AnimationType.Attack,
     emote: AnimationType.Shoot
@@ -6509,6 +6544,51 @@ export const AnimationConfig: {
     ability: AnimationType.Charge,
     emote: AnimationType.Idle,
     shinyUnavailable: true
+  },
+  [Pkm.GRUBBIN]: {
+    attack: AnimationType.Shoot,
+    ability: AnimationType.Attack,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.CHARJABUG]: {
+    attack: AnimationType.Shoot,
+    ability: AnimationType.Attack,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.VIKAVOLT]: {
+    attack: AnimationType.Shoot,
+    ability: AnimationType.Attack,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.SHELLOS_WEST_SEA]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.GASTRODON_WEST_SEA]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.SHELLOS_EAST_SEA]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.GASTRODON_EAST_SEA]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.MUNNA]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Shoot
+  },
+  [Pkm.MUSHARNA]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Shoot
   },
   [Pkm.FALINKS]: {
     attack: AnimationType.Attack,
