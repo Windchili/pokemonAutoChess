@@ -1,5 +1,5 @@
 import Player from "../models/colyseus-models/player"
-import { Falinks } from "../models/colyseus-models/pokemon"
+import { Falinks, FalinksTrooper } from "../models/colyseus-models/pokemon"
 import { Transfer } from "../types"
 import { Effect } from "../types/enum/Effect"
 import { BoardEvent, PokemonActionState } from "../types/enum/Game"
@@ -10,6 +10,7 @@ import { distanceC } from "../utils/distance"
 import Board from "./board"
 import { getMoveSpeed, PokemonEntity } from "./pokemon-entity"
 import PokemonState from "./pokemon-state"
+import { logger } from "../utils/logger"
 
 export default class MovingState extends PokemonState {
   update(
@@ -26,39 +27,93 @@ export default class MovingState extends PokemonState {
         pokemon,
         board
       )
+
+      /*let trooperCheck = false
+      if (pokemon.passive === Passive.TROOPER){
+        let trooper = pokemon.refToBoardPokemon as FalinksTrooper
+        if (!trooper.inFormation){
+          trooperCheck = true
+        }
+      }*/
+      
+      //if (!trooperCheck){
+      if (pokemon.passive === Passive.TROOPER){
+        let trooper = pokemon.refToBoardPokemon as FalinksTrooper
+        if (!trooper.inFormation){
+          logger.debug("NOT IN FORMATION")
+          return
+        }
+      }
+      
       if (pokemon.status.charm) {
-        if (
-          pokemon.status.charmOrigin &&
-          distanceC(
-            pokemon.positionX,
-            pokemon.positionY,
-            pokemon.status.charmOrigin.positionX,
-            pokemon.status.charmOrigin.positionY
-          ) > 1
-        ) {
-          this.move(pokemon, board, {
-            x: pokemon.status.charmOrigin.positionX,
-            y: pokemon.status.charmOrigin.positionY
-          })
+          if (
+            pokemon.status.charmOrigin &&
+            distanceC(
+              pokemon.positionX,
+              pokemon.positionY,
+              pokemon.status.charmOrigin.positionX,
+              pokemon.status.charmOrigin.positionY
+            ) > 1
+          ) {
+            this.move(pokemon, board, {
+              x: pokemon.status.charmOrigin.positionX,
+              y: pokemon.status.charmOrigin.positionY
+            })
+          }
+        } else if (targetAtRange) {
+          pokemon.toAttackingState()
+        } else {
+          const targetAtSight = this.getNearestTargetAtSightCoordinates(
+            pokemon,
+            board
+          )
+          if (targetAtSight) {
+            this.move(pokemon, board, targetAtSight)
+          }
         }
-      } else if (targetAtRange) {
-        pokemon.toAttackingState()
       } else {
-        const targetAtSight = this.getNearestTargetAtSightCoordinates(
-          pokemon,
-          board
-        )
-        if (targetAtSight) {
-          this.move(pokemon, board, targetAtSight)
+        pokemon.cooldown = Math.max(0, pokemon.cooldown - dt)
+        if (pokemon.status.skydiving && pokemon.cooldown <= 0) {
+          pokemon.status.skydiving = false
+          pokemon.cooldown = 500 // adding a cooldown again just for moving from landing cell to final cell after skydiving
         }
-      }
-    } else {
-      pokemon.cooldown = Math.max(0, pokemon.cooldown - dt)
-      if (pokemon.status.skydiving && pokemon.cooldown <= 0) {
-        pokemon.status.skydiving = false
-        pokemon.cooldown = 500 // adding a cooldown again just for moving from landing cell to final cell after skydiving
-      }
+      //}
+
+      if (pokemon.passive === Passive.FALINKS) {
+        logger.debug("Lol")
+        let brass = pokemon.refToBoardPokemon as Falinks
+        let prevX = 0
+        let prevY = 0
+        let nextX = brass.positionX
+        let nextY = brass.positionY
+  
+        brass.troops.forEach((trooper) => {
+          prevX = trooper.positionX
+          prevY = trooper.positionY
+
+          /*if(distanceC(
+            trooper.positionX,
+            trooper.positionY,
+            nextX,
+            nextY
+          ) > 1){*/
+            this.move(trooper, board, {
+              x: nextX,
+              y: nextY
+            })
+            nextX = prevX
+            nextY = prevY
+          //} else {
+          //  return
+          //}
+        })
+        brass.onWalk({x: nextX, y: nextY, brass: pokemon, board: board})
+
+      } 
     }
+      
+
+    
   }
 
   move(
@@ -140,10 +195,10 @@ export default class MovingState extends PokemonState {
           undefined
         )
         // logger.debug(`pokemon ${pokemon.name} moved from (${pokemon.positionX},${pokemon.positionY}) to (${x},${y}), (desired direction (${coordinates.x}, ${coordinates.y})), orientation: ${pokemon.orientation}`);
-        if(pokemon.passive === Passive.FALINKS){
-          let falinksBrass = pokemon.refToBoardPokemon as Falinks
-          falinksBrass.onWalk({x: x, y: y, brass: pokemon})
-        }
+        //if(pokemon.passive === Passive.FALINKS){
+          //let falinksBrass = pokemon.refToBoardPokemon as Falinks
+          //falinksBrass.onWalk({x: x, y: y, brass: pokemon, board: board})
+        //}
         board.swapValue(pokemon.positionX, pokemon.positionY, x, y)
       }
     }

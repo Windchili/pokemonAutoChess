@@ -58,6 +58,7 @@ import { values } from "../../utils/schemas"
 import PokemonFactory from "../pokemon-factory"
 import Player from "./player"
 import { PokemonEntity } from "../../core/pokemon-entity"
+import Board from "../../core/board"
 
 export class Pokemon extends Schema implements IPokemon {
   @type("string") id: string
@@ -13932,12 +13933,14 @@ export class Falinks extends Pokemon {
   evolution = Pkm.SQUIRTLE
 
   troopCount = 0
+  troops: Array<PokemonEntity> = []
 
   beforeSimulationStart(){
-      this.troopCount = 0
+      this.troopCount = 1
+      this.troops = []
   }
   
-  onWalk({ x, y, brass }: { x: number, y: number, brass: PokemonEntity }){
+  onWalk({ x, y, brass, board }: { x: number, y: number, brass: PokemonEntity, board: Board }){
     if (this.troopCount < 5){
       this.troopCount++;
       //const brass = entity as PokemonEntity
@@ -13945,7 +13948,7 @@ export class Falinks extends Pokemon {
         Pkm.FALINKS_TROOPER,
         brass.player
       )
-      const newEntity = brass.simulation.addPokemon(
+      this.troops[this.troopCount] = brass.simulation.addPokemon(
         trooper,
         x,
         y,
@@ -13971,7 +13974,14 @@ export class FalinksTrooper extends Pokemon {
   maxPP = 100
   range = 1
   skill = Ability.TACKLE
+  passive = Passive.TROOPER
   attackSprite = AttackSprite.FIGHTING_MELEE
+
+  inFormation = true
+
+  beforeSimulationStart(){
+    this.inFormation = true
+}
 }
 
 export class Grubbin extends Pokemon {

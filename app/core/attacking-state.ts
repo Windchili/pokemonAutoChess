@@ -95,7 +95,7 @@ export default class AttackingState extends PokemonState {
           // moveTo is also problematic
           //pokemon.moveTo(emptyTarget.x, emptyTarget.y, board)
         //target = this.getFarthestTarget(pokemon, board)
-        target = this.getFarthestTarget(
+          target = this.getFarthestTarget(
           pokemon,
           board
         )
