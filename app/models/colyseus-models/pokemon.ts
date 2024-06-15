@@ -13764,7 +13764,8 @@ export class Golurk extends Pokemon {
 
 export class Trubbish extends Pokemon {
   types = new SetSchema<Synergy>([Synergy.POISON, Synergy.ARTIFICIAL])
-  rarity = Rarity.EPIC
+  //rarity = Rarity.EPIC
+  rarity = Rarity.COMMON
   evolution = Pkm.GARBODOR
   stars = 1
   hp = 110
@@ -13776,7 +13777,7 @@ export class Trubbish extends Pokemon {
   skill = Ability.GUNK_SHOT
   passive = Passive.RECYCLE
   attackSprite = AttackSprite.POISON_MELEE
-  additional = true
+  //additional = true
 
   defaultValues = {
     [Stat.HP]: this.hp,
@@ -13820,6 +13821,14 @@ export class Trubbish extends Pokemon {
         player.artificialItems[itemIndex] = Item.TRASH
         player.items.push(player.artificialItems[itemIndex])
       }
+
+      if (this.statIncreases[Stat.HP] + this.defaultValues[Stat.HP] >= 500 &&
+        player.artificialItems.filter(
+          (item) => {item === Item.TRASH}
+        ).length === 3)
+        {
+          player.titles?.add(Title.GARBAGE_COLLECTOR)
+        }
     })
 
     // Update permanent stats

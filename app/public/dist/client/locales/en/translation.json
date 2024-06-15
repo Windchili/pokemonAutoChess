@@ -2245,7 +2245,8 @@
     "GLUTTON": "Glutton",
     "STARGAZER": "Stargazer",
     "BLOODY": "Bloody",
-    "ETERNAL": "Eternal"
+    "ETERNAL": "Eternal",
+    "GARBAGE_COLLECTOR": "Garbage Collector"
   },
   "title_description": {
     "NOVICE": "Play your first game",
@@ -2312,7 +2313,8 @@
     "GLUTTON": "Get a Snorlax with more than 750 base HP",
     "STARGAZER": "Get Solgaleo or Lunala",
     "BLOODY": "Get Bloodmoon Ursaluna",
-    "ETERNAL": "Meet Arceus at stage 40"
+    "ETERNAL": "Meet Arceus at stage 40",
+    "GARBAGE_COLLECTOR": "Get Trubbish or Garbodor to 500 base HP and collect 3 Trash in the same game"
   },
   "weather": {
     "NEUTRAL": "Calm weather",

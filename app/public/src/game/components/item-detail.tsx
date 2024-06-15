@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next"
 import { Tooltip } from "react-tooltip"
 import { ItemStats } from "../../../../types/Config"
 import { Stat } from "../../../../types/enum/Game"
-import { Item, ItemRecipe } from "../../../../types/enum/Item"
+import { Berries, WeatherRocks, ShinyItems, ArtificialItems, Item, ItemComponents, ItemRecipe } from "../../../../types/enum/Item"
 import { addIconsToDescription } from "../../pages/utils/descriptions"
 import "./item-detail.css"
 
@@ -53,7 +53,7 @@ export function ItemDetailTooltip({
           </div>
         ))}
       </div>
-      <p className="game-item-detail-description">
+      <p className="game-item-detail-description" style={{ backgroundColor: calcTooltipColor(item)[1] }}>
         {addIconsToDescription(t(`item_description.${item}`))}
       </p>
       {recipes.length > 0 && depth <= 1 && (
@@ -72,6 +72,7 @@ export function ItemDetailTooltip({
                   float
                   place="right"
                   className="custom-theme-tooltip item-detail-tooltip"
+                  arrowColor={calcTooltipColor(item)[0]}
                 >
                   <ItemDetailTooltip item={otherComponent} depth={depth + 1} />
                 </Tooltip>
@@ -85,6 +86,7 @@ export function ItemDetailTooltip({
                   float
                   place="right"
                   className="custom-theme-tooltip item-detail-tooltip"
+                  arrowColor={calcTooltipColor(item)[0]}
                 >
                   <ItemDetailTooltip item={result as Item} depth={depth + 1} />
                 </Tooltip>
@@ -103,8 +105,26 @@ export default class ItemDetail extends GameObjects.DOMElement {
     super(scene, x, y)
     this.dom = document.createElement("div")
     this.dom.className = "my-container item-detail-tooltip"
+
+    this.dom.style.backgroundColor = calcTooltipColor(name)[0]
+
     this.setElement(this.dom)
     const root = ReactDOM.createRoot(this.dom)
     root.render(<ItemDetailTooltip item={name} />)
+    
+  }
+}
+
+export function calcTooltipColor(item: Item){
+  if (Berries.includes(item)){
+    return ["#6d905b","#4d664d"]
+  } else if (ArtificialItems.includes(item)) {
+    return ["#8b8b8b","#636363"]
+  } else if (WeatherRocks.includes(item)) {
+    return ["#847567","#5c5a53"]
+  } else if (ShinyItems.includes(item)) {
+    return ["#a68646","#7d6a43"]
+  } else {
+    return ["#61738a","#4f5160"]
   }
 }

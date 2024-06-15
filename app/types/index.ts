@@ -719,7 +719,8 @@ export enum Title {
   GLUTTON = "GLUTTON",
   STARGAZER = "STARGAZER",
   BLOODY = "BLOODY",
-  ETERNAL = "ETERNAL"
+  ETERNAL = "ETERNAL",
+  GARBAGE_COLLECTOR = "GARBAGE_COLLECTOR"
 }
 
 export interface IBoardEvent {
