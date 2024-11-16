@@ -1521,8 +1521,13 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
   }
 
   applyStat(stat: Stat, value: number) {
+    let lowModifier = 0.85
     switch (stat) {
       case Stat.ATK:
+        if (this.items.has(Item.DUBIOUS_DISC)) {
+          lowModifier += this.luck * 0.01
+          value = Math.round(value * (Math.random() * 0.5 + lowModifier))
+        }
         this.addAttack(value, this, 0, false)
         break
       case Stat.DEF:
@@ -1532,12 +1537,20 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
         this.addSpecialDefense(value, this, 0, false)
         break
       case Stat.AP:
+        if (this.items.has(Item.DUBIOUS_DISC)) {
+          lowModifier += this.luck * 0.01
+          value = Math.round((value * Math.random() * 0.5 + lowModifier))
+        }
         this.addAbilityPower(value, this, 0, false)
         break
       case Stat.PP:
         this.addPP(value, this, 0, false)
         break
       case Stat.ATK_SPEED:
+        if (this.items.has(Item.DUBIOUS_DISC)) {
+          lowModifier += this.luck * 0.01
+          value *= Math.random() * 0.5 + lowModifier
+        }
         this.addAttackSpeed(value, this, 0, false)
         break
       case Stat.CRIT_CHANCE:
@@ -1804,6 +1817,16 @@ export function getMoveSpeed(
   } else if (pokemon.effects.has(Effect.BERSERK)) {
     moveSpeed += 1.0
   }
+ 
 
+  if (pokemon.items.has(Item.DUBIOUS_DISC)) {
+    logger.debug("moveSpeed pre disc: ",moveSpeed," ", pokemon.name)
+    let lowModifier = 0.85
+    lowModifier += pokemon.luck * 0.01
+    
+    moveSpeed *= Math.floor(Math.random() * 0.5 + lowModifier)
+    logger.debug("moveSpeed after disc: ",moveSpeed," ", pokemon.name)
+  }
+  
   return moveSpeed
 }

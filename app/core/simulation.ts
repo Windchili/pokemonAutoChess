@@ -356,6 +356,15 @@ export default class Simulation extends Schema implements ISimulation {
       )
     }
 
+    if (item === Item.DUBIOUS_DISC) {
+      let lowModifier = 0.85
+      lowModifier += pokemon.luck * 0.01
+
+      pokemon.atk = Math.round(pokemon.atk * (Math.random() * 0.5 + lowModifier))
+      pokemon.atkSpeed *= Math.random() * 0.5 + lowModifier
+      pokemon.ap = Math.round(pokemon.ap * (Math.random() * 0.5 + lowModifier))
+    }
+
     if (item === Item.SOUL_DEW) {
       pokemon.status.triggerSoulDew(1000)
     }

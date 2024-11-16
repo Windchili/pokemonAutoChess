@@ -124,7 +124,8 @@ export enum Item {
   TEAL_MASK = "TEAL_MASK",
   WELLSPRING_MASK = "WELLSPRING_MASK",
   CORNERSTONE_MASK = "CORNERSTONE_MASK",
-  HEARTHFLAME_MASK = "HEARTHFLAME_MASK"
+  HEARTHFLAME_MASK = "HEARTHFLAME_MASK",
+  DUBIOUS_DISC = "DUBIOUS_DISC"
 }
 
 export const AllItems: Item[] = Object.values(Item)
@@ -162,7 +163,8 @@ export const ItemComponents: Item[] = [
   Item.CHARCOAL,
   Item.NEVER_MELT_ICE,
   Item.HEART_SCALE,
-  Item.MYSTIC_WATER
+  Item.MYSTIC_WATER,
+  Item.DUBIOUS_DISC
 ]
 
 export const ItemRecipe: { [key in Item]?: Item[] } = {
@@ -252,7 +254,8 @@ export const ArtificialItems: Item[] = [
   Item.POKERUS_VIAL,
   Item.ROTOM_PHONE,
   Item.SILK_SCARF,
-  Item.TINY_MUSHROOM
+  Item.TINY_MUSHROOM,
+  Item.DUBIOUS_DISC
 ]
 
 export const ShinyItems: Item[] = [
@@ -373,7 +376,8 @@ export const NonSpecialItemComponents: Item[] = [
   Item.CHARCOAL,
   Item.NEVER_MELT_ICE,
   Item.HEART_SCALE,
-  Item.MYSTIC_WATER
+  Item.MYSTIC_WATER,
+  Item.DUBIOUS_DISC
 ]
 
 export const NonHoldableItems: Item[] = [
