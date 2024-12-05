@@ -56,6 +56,13 @@ export default abstract class PokemonState {
         damage = Math.round(damage + target.hp * 0.08)
       }
 
+      if (
+        target.items.has(Item.FLYINIUM_Z) &&
+        pokemon.range === 1
+      ) {
+        damage = Math.ceil(damage * 0.3)
+      }
+
       if (pokemon.attackType === AttackType.SPECIAL) {
         damage = Math.ceil(damage * (1 + pokemon.ap / 100))
       }
@@ -399,6 +406,13 @@ export default abstract class PokemonState {
         // damage reduction
         if (pokemon.items.has(Item.POKE_DOLL)) {
           reducedDamage = Math.ceil(reducedDamage * 0.7)
+        }
+
+        if (
+          attackType === AttackType.SPECIAL &&
+          pokemon.items.has(Item.ICIUM_Z)
+        ) {
+          reducedDamage = Math.ceil(reducedDamage * 0.4)
         }
 
         if (
@@ -820,7 +834,7 @@ export default abstract class PokemonState {
     }
 
     if (pokemon.items.has(Item.GRASSIUM_Z)) {
-      pokemon.handleHeal(4, pokemon, 0, false)
+      pokemon.handleHeal(5, pokemon, 0, false)
     }
 
     if (

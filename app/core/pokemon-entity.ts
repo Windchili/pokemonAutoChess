@@ -910,6 +910,10 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
       }
     }
 
+    if (this.items.has(Item.FIRIUM_Z)) {
+      target.status.triggerBurn(2000, target, this)
+    }
+
     if (this.hasSynergyEffect(Synergy.FIRE)) {
       const burnChance = 0.3
       if (this.effects.has(Effect.VICTORY_STAR)) {

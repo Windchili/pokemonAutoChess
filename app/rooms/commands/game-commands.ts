@@ -1384,9 +1384,10 @@ export class OnUpdatePhaseCommand extends Command<GameRoom> {
       this.state.shinyEncounter =
         this.state.specialGameRule === SpecialGameRule.SHINY_HUNTER ||
         chance(pveStageCheck.shinyChance ?? 0)
-      this.state.totemEncounter =
-        chance(pveStageCheck.totemChance ?? 0)
-
+      if (!this.state.shinyEncounter) {
+        this.state.totemEncounter =
+          chance(pveStageCheck.totemChance ?? 0)
+      }
       this.state.players.forEach((player: Player) => {
         if (player.alive) {
           
