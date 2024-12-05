@@ -135,6 +135,8 @@ export class Pokemon extends Schema implements IPokemon {
   get luck(): number {
     let luck = 0
     if (this.items.has(Item.LUCKY_EGG)) luck += 50
+    if (this.items.has(Item.FAIRIUM_Z)) luck += 50
+    if (this.items.has(Item.BABIUM_Z)) luck += 100
     return luck
   }
 

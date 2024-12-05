@@ -15,8 +15,10 @@ import Player from "../../models/colyseus-models/player"
 import { PokemonClasses } from "../../models/colyseus-models/pokemon"
 import { createRandomEgg } from "../../models/egg-factory"
 import PokemonFactory from "../../models/pokemon-factory"
-import { PVEStages } from "../../models/pve-stages"
+import { PVEStages, TotemPokemon } from "../../models/pve-stages"
 import { getBuyPrice, getSellPrice } from "../../models/shop"
+import { DungeonDetails } from "../../types/enum/Dungeon"
+import { Emotion } from "../../types"
 import {
   IClient,
   IDragDropCombineMessage,
@@ -50,7 +52,9 @@ import {
   OgerponMasks,
   ShinyItems,
   SynergyGivenByItem,
-  SynergyItems
+  SynergyItems,
+  ZCrystals,
+  ZCrystalSynergies
 } from "../../types/enum/Item"
 import { Passive } from "../../types/enum/Passive"
 import {
@@ -78,6 +82,7 @@ import { chance, pickNRandomIn, pickRandomIn } from "../../utils/random"
 import { resetArraySchema, values } from "../../utils/schemas"
 import { getWeather } from "../../utils/weather"
 import GameRoom from "../game-room"
+import PokemonSprite from "../../public/src/game/components/pokemon"
 
 export class OnShopCommand extends Command<
   GameRoom,
@@ -1373,14 +1378,36 @@ export class OnUpdatePhaseCommand extends Command<GameRoom> {
     updateLobby(this.room)
     this.state.botManager.updateBots()
 
-    const pveStage = PVEStages[this.state.stageLevel]
+    const pveStageCheck = PVEStages[this.state.stageLevel]
 
-    if (pveStage) {
+    if (pveStageCheck) {
       this.state.shinyEncounter =
         this.state.specialGameRule === SpecialGameRule.SHINY_HUNTER ||
-        chance(pveStage.shinyChance ?? 0)
+        chance(pveStageCheck.shinyChance ?? 0)
+      this.state.totemEncounter =
+        chance(pveStageCheck.totemChance ?? 0)
+
       this.state.players.forEach((player: Player) => {
         if (player.alive) {
+          
+          const playerSynergies = DungeonDetails[player.map]?.synergies
+          
+          let pveStage = PVEStages[this.state.stageLevel]
+
+          if (this.state.totemEncounter) {
+            let pveTotem = TotemPokemon[Synergy[playerSynergies[0]]]
+            pveStage = {
+            
+              name: "totem_pokemon",
+              avatar: Pkm[pveTotem],
+              emotion: Emotion.ANGRY,
+              board: [
+                [Pkm[pveTotem], 4, 2]
+              ]
+              
+            }
+          }
+
           player.opponentId = "pve"
           player.opponentName = pveStage.name
           player.opponentAvatar = getAvatarString(
@@ -1394,15 +1421,21 @@ export class OnUpdatePhaseCommand extends Command<GameRoom> {
           const rewards = pveStage.getRewards?.(player) ?? ([] as Item[])
           resetArraySchema(player.pveRewards, rewards)
 
+          const playerZCrystals = ZCrystals.filter((crystal) => {
+            return playerSynergies.includes(ZCrystalSynergies[crystal])
+          })
+
           const rewardsPropositions = this.state.shinyEncounter
             ? pickNRandomIn(ShinyItems, 3)
+            : this.state.totemEncounter ? pickNRandomIn(playerZCrystals, 3)
             : (pveStage.getRewardsPropositions?.(player) ?? ([] as Item[]))
 
           resetArraySchema(player.pveRewardsPropositions, rewardsPropositions)
 
           const pveBoard = PokemonFactory.makePveBoard(
             pveStage,
-            this.state.shinyEncounter
+            this.state.shinyEncounter,
+            this.state.totemEncounter
           )
           const weather = getWeather(player, null, pveBoard)
           const simulation = new Simulation(

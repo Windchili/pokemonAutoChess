@@ -204,6 +204,10 @@ export function displayAbility(
       addAbilitySprite("LANDS_WRATH/hit", coordinates, true).setScale(2)
       break
 
+    case "TOTEM_SOS":
+      addAbilitySprite("TOTEM_SOS", coordinates, true).setScale(5)
+      break
+
     case Ability.CORE_ENFORCER:
       addAbilitySprite(skill, coordinates, true).setScale(2)
       break

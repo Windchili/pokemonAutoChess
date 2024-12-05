@@ -819,6 +819,10 @@ export default abstract class PokemonState {
       }
     }
 
+    if (pokemon.items.has(Item.GRASSIUM_Z)) {
+      pokemon.handleHeal(4, pokemon, 0, false)
+    }
+
     if (
       pokemon.effects.has(Effect.STEALTH_ROCKS) &&
       !pokemon.types.has(Synergy.ROCK) &&

@@ -9,7 +9,8 @@ import {
   ItemRecipe,
   SpecialItems,
   ShinyItems,
-  WeatherRocks
+  WeatherRocks,
+  ZCrystals
 } from "../../../../../types/enum/Item"
 import { Synergy } from "../../../../../types/enum/Synergy"
 import { ItemDetailTooltip } from "../../../game/components/item-detail"
@@ -171,6 +172,24 @@ export default function WikiItems() {
         <p>{addIconsToDescription(t("weather_rocks_description"))}</p>
         <ul>
           {WeatherRocks.map((i) => (
+            <li
+              key={i}
+              data-tooltip-id="detail-item"
+              onMouseOver={() => setItemHovered(i)}
+            >
+              <img src={"assets/item/" + i + ".png"} className="item"></img>
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <article className="z-crystals">
+        <h2>
+          {t("z-crystals")}
+        </h2>
+        <p>{addIconsToDescription(t("z-crystals_description"))}</p>
+        <ul>
+          {ZCrystals.map((i) => (
             <li
               key={i}
               data-tooltip-id="detail-item"

@@ -78,6 +78,7 @@ import { MainSidebar } from "./component/main-sidebar/main-sidebar"
 import { playMusic, preloadMusic } from "./utils/audio"
 import { LocalStoreKeys, localStore } from "./utils/store"
 import { FIREBASE_CONFIG } from "./utils/utils"
+import { Pokemon } from "../../../models/colyseus-models/pokemon"
 
 let gameContainer: GameContainer
 

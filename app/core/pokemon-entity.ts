@@ -37,7 +37,7 @@ import {
 } from "../types/enum/Game"
 import { Berries, Item } from "../types/enum/Item"
 import { Passive } from "../types/enum/Passive"
-import { Pkm, PkmIndex } from "../types/enum/Pokemon"
+import { Pkm, PkmIndex, PkmFamily } from "../types/enum/Pokemon"
 import { SpecialGameRule } from "../types/enum/SpecialGameRule"
 import { Synergy, SynergyEffects } from "../types/enum/Synergy"
 import { Weather } from "../types/enum/Weather"
@@ -1345,6 +1345,58 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
         }
       })
     }
+
+    if (this.passive === Passive.TOTEM && this.life < 0.5 * this.hp){
+      this.passive = Passive.NONE
+      this.addAttack(this.atk, this, 0, false)
+      this.addAbilityPower(100, this, 0, false)
+
+      for (let i = 0; i < 1; i++) {
+        let name = PkmFamily[this.name]
+        switch (this.name) {
+          case Pkm.TAPU_BULU:
+            name = Pkm.SEEDOT
+            break
+          case Pkm.TAPU_KOKO:
+            name = Pkm.MAGNEMITE
+            break
+          case Pkm.TURTONATOR:
+            name = Pkm.BAGON
+            break
+          case Pkm.MIMIKYU:
+            name = Pkm.SINISTEA
+            break
+          case Pkm.TAPU_FINI:
+            name = Pkm.FLABEBE
+            break
+          case Pkm.HAPPINY:
+            name = pickRandomIn([Pkm.PICHU, Pkm.AZURILL, Pkm.IGGLYBUFF, Pkm.SMOOCHUM, Pkm.CLEFFA, Pkm.TOGEPI, Pkm.PHANPY, Pkm.MAGBY, Pkm.WYNAUT, Pkm.MIME_JR, Pkm.RIOLU, Pkm.TOXEL, Pkm.ELEKID, Pkm.BUDEW, Pkm.BONSLEY, Pkm.MUNCHLAX])
+        }
+
+        const ally = PokemonFactory.createPokemonFromName(
+          name,
+          this.player
+        )
+        const coord = this.simulation.getClosestAvailablePlaceOnBoardToPokemon(
+          this,
+          this.team
+        )
+        const entity = this.simulation.addPokemon(
+          ally,
+          coord.x,
+          coord.y,
+          this.team,
+          true
+        )
+
+        this.simulation.room.broadcast(Transfer.ABILITY, {
+          id: this.simulation.id,
+          skill: "TOTEM_SOS",
+          positionX: this.positionX,
+          positionY: this.positionY
+        })
+      } 
+    }
   }
 
   onCriticalAttack({
@@ -1580,6 +1632,22 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
         })
       }, 16) // delay to next tick, targeting 60 ticks per second
     }
+
+    // Fieldium Z Buffs
+    const _pokemon = this
+    this.simulation.room.clock.setTimeout(() => {
+      board.forEach((x, y, value) => {
+        if (
+          value &&
+          value.team == _pokemon.team &&
+          value.items.has(Item.FIELDIUM_Z)
+        ) {
+          value.count.fieldCount++
+          value.addShield(20, _pokemon, 0, false)
+          value.addAttack(4, _pokemon, 0, false)
+        }
+      })
+    }, 16)
 
     if (this.status.curseVulnerability) {
       this.simulation.applyCurse(Effect.CURSE_OF_VULNERABILITY, this.team)
@@ -1906,6 +1974,14 @@ export function getMoveSpeed(
     moveSpeed += 0.8
   } else if (pokemon.effects.has(Effect.BERSERK)) {
     moveSpeed += 1.0
+  }
+  
+  if (pokemon.items.has(Item.WILDIUM_Z)) {
+    moveSpeed += 1.0
+  }
+
+  if (pokemon.items.has(Item.AQUATINIUM_Z)) {
+    moveSpeed += 0.4
   }
 
   return moveSpeed

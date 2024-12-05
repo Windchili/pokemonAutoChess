@@ -1,4 +1,5 @@
 import { Effect } from "./Effect"
+import { Pkm } from "../../types/enum/Pokemon"
 
 export enum Synergy {
   NORMAL = "NORMAL",

@@ -57,6 +57,7 @@ export default class GameState extends Schema {
   endTime: number | undefined = undefined
   preparationId: string
   shinyEncounter = false
+  totemEncounter = false
   pveRewards: Item[] = []
   pveRewardsPropositions: Item[] = []
   minRank: EloRank | null = null

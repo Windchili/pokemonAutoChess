@@ -39,6 +39,7 @@ import PokemonSprite from "../components/pokemon"
 import { SellZone } from "../components/sell-zone"
 import UnownManager from "../components/unown-manager"
 import WeatherManager from "../components/weather-manager"
+import { Pokemon } from "../../../../models/colyseus-models/pokemon"
 
 export default class GameScene extends Scene {
   tilemaps: Map<DungeonPMDO, DesignTiled> = new Map<DungeonPMDO, DesignTiled>()

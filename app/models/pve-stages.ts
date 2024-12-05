@@ -7,6 +7,7 @@ import {
   ShinyItems
 } from "../types/enum/Item"
 import { Pkm } from "../types/enum/Pokemon"
+import { Synergy } from "../types/enum/Synergy"
 import { pickNRandomIn, pickRandomIn } from "../utils/random"
 import Player from "./colyseus-models/player"
 
@@ -15,6 +16,7 @@ export type PVEStage = {
   avatar: Pkm
   emotion?: Emotion
   shinyChance?: number
+  totemChance?: number
   getRewards?: (player: Player) => Item[]
   getRewardsPropositions?: (player: Player) => Item[]
   board: [pkm: Pkm, x: number, y: number][]
@@ -29,6 +31,7 @@ export const PVEStages: { [turn: number]: PVEStage } = {
       [Pkm.MAGIKARP, 5, 1]
     ],
     shinyChance: 1 / 40,
+    totemChance: 1,
     getRewards(player: Player) {
       const randomComponent = pickRandomIn(NonSpecialItemComponents)
       player.randomComponentsGiven.push(randomComponent)
@@ -184,4 +187,37 @@ export const PVEStages: { [turn: number]: PVEStage } = {
       return pickNRandomIn(ShinyItems, 3)
     }
   }
+}
+
+export const TotemPokemon: { [key in Synergy]: Pkm } = {
+  [Synergy.NORMAL]: Pkm.STOUTLAND,
+  [Synergy.GRASS]: Pkm.TAPU_BULU,
+  [Synergy.FIRE]: Pkm.HISUI_ARCANINE,
+  [Synergy.WATER]: Pkm.ARAQUANID,
+  [Synergy.ELECTRIC]: Pkm.TAPU_KOKO,
+  [Synergy.FIGHTING]: Pkm.HITMONTOP,
+  [Synergy.PSYCHIC]: Pkm.TAPU_LELE,
+  [Synergy.DARK]: Pkm.SCRAFTY,
+  [Synergy.STEEL]: Pkm.ALOLAN_DUGTRIO,
+  [Synergy.GROUND]: Pkm.SANDSLASH,
+  [Synergy.POISON]: Pkm.ALOLAN_MUK,
+  [Synergy.DRAGON]: Pkm.TURTONATOR,
+  [Synergy.FIELD]: Pkm.AMPHAROS,
+  [Synergy.MONSTER]: Pkm.RAMPARDOS,
+  [Synergy.HUMAN]: Pkm.INFERNAPE,
+  [Synergy.AQUATIC]: Pkm.CRAWDAUNT,
+  [Synergy.BUG]: Pkm.ARIADOS,
+  [Synergy.FLYING]: Pkm.XATU,
+  [Synergy.FLORA]: Pkm.GLOOM,
+  [Synergy.ROCK]: Pkm.ALOLAN_GOLEM,
+  [Synergy.GHOST]: Pkm.MIMIKYU,
+  [Synergy.FAIRY]: Pkm.TAPU_FINI,
+  [Synergy.ICE]: Pkm.MAMOSWINE,
+  [Synergy.FOSSIL]: Pkm.TANGROWTH,
+  [Synergy.SOUND]: Pkm.CHIMECHO,
+  [Synergy.ARTIFICIAL]: Pkm.ELECTRODE,
+  [Synergy.LIGHT]: Pkm.CHANDELURE,
+  [Synergy.WILD]: Pkm.BRAVIARY,
+  [Synergy.BABY]: Pkm.HAPPINY,
+  [Synergy.AMORPHOUS]: Pkm.PALOSSAND
 }

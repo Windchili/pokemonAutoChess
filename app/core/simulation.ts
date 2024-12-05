@@ -372,6 +372,40 @@ export default class Simulation extends Schema implements ISimulation {
       pokemon.range += 2
     }
 
+    if (item === Item.FAIRIUM_Z) {
+      pokemon.range += 1
+    }
+
+    if (item === Item.AMORPHIUM_Z) {
+      if (pokemon.player) {
+        pokemon.addAbilityPower(20 * pokemon.player?.synergies.countActiveSynergies(), pokemon, 0, false)
+      }
+    }
+
+    if (item === Item.SOUNDIUM_Z) {
+      pokemon.maxPP -= 15
+    }
+
+    if (item === Item.LIGHTIUM_Z) {
+      pokemon.maxPP -= 5
+    }
+
+    if (item === Item.DRAGONIUM_Z) {
+      pokemon.stars += 1
+    }
+
+    if (item === Item.POISONIUM_Z) {
+      pokemon.status.triggerPoison(60000, pokemon, undefined)
+    }
+
+    if (item === Item.AQUATINIUM_Z) {
+      pokemon.status.triggerRuneProtect(60000)
+    }
+
+    if (item === Item.STEELIUM_Z) {
+      pokemon.status.triggerLocked(20000, pokemon)
+    }
+
     if (item === Item.MAX_REVIVE) {
       pokemon.status.resurection = true
     }
@@ -578,6 +612,19 @@ export default class Simulation extends Schema implements ISimulation {
             teamIndex
           )
           this.addPokemon(rotomDrone, coord.x, coord.y, teamIndex, true)
+        }
+
+        if (pokemon.items.has(Item.FLORIUM_Z) && !isOnBench(pokemon)) {
+          const player = board === blueBoard ? this.bluePlayer : this.redPlayer
+          const floriumSpawn = PokemonFactory.createPokemonFromName(
+            Pkm.GLOOM,
+            player
+          )
+          const coord = this.getClosestAvailablePlaceOnBoardToPokemon(
+            pokemon,
+            teamIndex
+          )
+          this.addPokemon(floriumSpawn, coord.x, coord.y, teamIndex, true)
         }
 
         if (pokemon.items.has(Item.WHITE_FLUTE) && !isOnBench(pokemon)) {

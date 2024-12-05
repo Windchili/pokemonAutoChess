@@ -4,11 +4,13 @@ import { Pkm, PkmFamily, PkmIndex } from "../types/enum/Pokemon"
 import { logger } from "../utils/logger"
 import { Pokemon, PokemonClasses } from "./colyseus-models/pokemon"
 import { PVEStage } from "./pve-stages"
+import { Passive } from "../types/enum/Passive"
 
 export default class PokemonFactory {
   static makePveBoard(
     pveStage: PVEStage,
-    shinyEncounter: boolean
+    shinyEncounter: boolean,
+    totemEncounter: boolean
   ): MapSchema<Pokemon> {
     const pokemons = new MapSchema<Pokemon>()
     pveStage.board.forEach(([pkm, x, y]) => {
@@ -19,6 +21,12 @@ export default class PokemonFactory {
       pokemon.positionX = x
       pokemon.positionY = y
       pokemons.set(pokemon.id, pokemon)
+      if (totemEncounter) {
+        pokemon.hp *= 0.1
+        pokemon.atk = 0
+        pokemon.def = 0
+        pokemon.passive = Passive.TOTEM
+      }
     })
     return pokemons
   }
