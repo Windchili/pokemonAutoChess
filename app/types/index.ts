@@ -404,6 +404,7 @@ export interface IPokemon {
   luck: number
   ap: number
   skill: Ability
+  zmove: Ability
   passive: Passive
   items: SetSchema<Item>
   shiny: boolean
@@ -597,6 +598,7 @@ export interface IPokemonEntity {
   types: SetSchema<Synergy>
   stars: number
   skill: Ability
+  zmove: Ability
   passive: Passive
   status: Status
   count: Count
@@ -624,6 +626,7 @@ export interface IStatus {
   resurecting: boolean
   paralysis: boolean
   pokerus: boolean
+  possessed: boolean
   locked: boolean
   armorReduction: boolean
   runeProtect: boolean

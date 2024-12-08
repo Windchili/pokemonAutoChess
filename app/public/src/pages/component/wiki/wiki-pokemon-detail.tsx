@@ -118,6 +118,18 @@ export default function WikiPokemonDetail(props: { pokemon: Pkm }) {
             </dd>
           </>
         )}
+        {pokemonData.zmove !== Ability.DEFAULT && (
+          <>
+            <dt>{t("zmove_label")}</dt>
+            <dd>
+              {t(`ability.${pokemon.zmove}`)}
+              <AbilityTooltip
+                ability={pokemonData.zmove}
+                stats={{ ap: 0, luck: 0, stars: pokemonData.stars }}
+              />
+            </dd>
+          </>
+        )}
         {pokemonData.passive !== Passive.NONE && (
           <>
             <dt>{t("passive")}</dt>

@@ -72,6 +72,7 @@ import {
 } from "../../utils/random"
 import { values } from "../../utils/schemas"
 import { DelayedCommand } from "../simulation-command"
+import { Pokemon } from "../../models/colyseus-models/pokemon"
 
 export class BlueFlareStrategy extends AbilityStrategy {
   process(
@@ -10850,6 +10851,105 @@ export class MetalClawStrategy extends AbilityStrategy {
   }
 }
 
+export class NeverEndingNightmareStrategy extends AbilityStrategy {
+  copyable = false
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+    const duration = Math.round(7000 * (1 + pokemon.ap / 100))
+
+    const targets = pickNRandomIn(
+      board.cells.filter((v) => v && v.team !== pokemon.team),
+      pokemon.stars
+    )
+
+    targets.forEach((possessionTarget) => {
+      if (possessionTarget) {
+        possessionTarget.status.triggerPossessed(duration, possessionTarget)
+      }
+    })
+  }
+}
+
+export class ChlorophyllHurricaneStrategy extends AbilityStrategy {
+  copyable = false
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+
+    let damage = [20, 30, 50][pokemon.stars - 1] ?? 50
+    const additionalDamage = [10, 30, 50][pokemon.stars - 1] ?? 50
+
+    if (pokemon.simulation.weather === Weather.LEAF_STORM) {
+      damage += additionalDamage
+    } else {
+      pokemon.simulation.weather = Weather.LEAF_STORM
+    }
+    
+    board.forEach((x: number, y: number, enemy: PokemonEntity | undefined) => {
+      if (enemy && pokemon.team != enemy.team) {
+        enemy.handleSpecialDamage(
+          damage,
+          board,
+          AttackType.SPECIAL,
+          pokemon,
+          crit
+        )
+      }
+    })
+  }
+}
+
+export class GenesisSupernovaStrategy extends AbilityStrategy {
+  copyable = false
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+    const duration = Math.round(5000 * (1 + (0.5 * pokemon.ap) / 100))
+
+    for (let i = 0; i < pokemon.stars * 5; i++) {
+      pokemon.commands.push(
+        new DelayedCommand(() => {
+          const solosis = PokemonFactory.createPokemonFromName(
+            Pkm.SOLOSIS,
+            pokemon.player
+          )
+          
+          const coord = pokemon.simulation.getClosestAvailablePlaceOnBoardToPokemon(
+            pokemon,
+            pokemon.team
+          )
+          pokemon.simulation.getFirstAvailablePlaceOnBoard
+          const entity = pokemon.simulation.addPokemon(
+            solosis,
+            coord.x,
+            coord.y,
+            pokemon.team,
+            true
+          )
+          
+          entity.status.triggerDelayedKO(duration)
+        }, i * 50) 
+      )
+    }
+  }
+}
+
 export * from "./hidden-power"
 
 export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
@@ -11244,5 +11344,8 @@ export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
   [Ability.BURN_UP]: new BurnUpStrategy(),
   [Ability.POWER_HUG]: new PowerHugStrategy(),
   [Ability.MORTAL_SPIN]: new MortalSpinStrategy(),
-  [Ability.METAL_CLAW]: new MetalClawStrategy()
+  [Ability.METAL_CLAW]: new MetalClawStrategy(),
+  [Ability.NEVER_ENDING_NIGHTMARE]: new NeverEndingNightmareStrategy(),
+  [Ability.CHLOROPHYLL_HURRICANE]: new ChlorophyllHurricaneStrategy(),
+  [Ability.GENESIS_SUPERNOVA]: new GenesisSupernovaStrategy()
 }

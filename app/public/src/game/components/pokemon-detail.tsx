@@ -1,3 +1,4 @@
+import { SetSchema } from "@colyseus/schema"
 import { t } from "i18next"
 import { GameObjects } from "phaser"
 import ReactDOM from "react-dom/client"
@@ -12,6 +13,7 @@ import { Synergy } from "../../../../types/enum/Synergy"
 import { AbilityTooltip } from "../../pages/component/ability/ability-tooltip"
 import { addIconsToDescription } from "../../pages/utils/descriptions"
 import { getPortraitSrc } from "../../../../utils/avatar"
+import { Item, ZCrystals } from "../../../../types/enum/Item"
 
 export default class PokemonDetail extends GameObjects.DOMElement {
   dom: HTMLDivElement
@@ -25,9 +27,11 @@ export default class PokemonDetail extends GameObjects.DOMElement {
   critPower: HTMLDivElement
   ap: HTMLDivElement
   abilityDescription: HTMLDivElement | null = null
+  zMoveDescription: HTMLDivElement | null = null
   passiveDescription: HTMLDivElement | null = null
   pp: HTMLDivElement
   abilityRoot: ReactDOM.Root | null = null
+  zMoveRoot: ReactDOM.Root | null = null
   passiveDescriptionRoot: ReactDOM.Root | null = null
 
   constructor(
@@ -54,7 +58,9 @@ export default class PokemonDetail extends GameObjects.DOMElement {
     shiny: boolean,
     index: string,
     stars: number,
-    evolution: Pkm
+    evolution: Pkm,
+    zmove: Ability,
+    items: SetSchema<Item>
   ) {
     super(scene, x, y)
 
@@ -195,6 +201,24 @@ export default class PokemonDetail extends GameObjects.DOMElement {
       wrap.appendChild(abilityDiv)
     }
 
+    let zCrystalCheck = false
+    items.forEach((item) => {
+      if ((ZCrystals as readonly string[]).includes(item)) {
+        zCrystalCheck = true
+      }
+    })
+
+    if (
+      zmove !== Ability.DEFAULT &&
+      zCrystalCheck
+    ) {
+      const zMoveDiv = document.createElement("div")
+      zMoveDiv.className = "game-pokemon-detail-zmove"
+      this.zMoveRoot = ReactDOM.createRoot(zMoveDiv)
+      this.updateZMoveDescription({ zmove, stars, ap, luck })
+      wrap.appendChild(zMoveDiv)
+    }
+
     this.dom.appendChild(wrap)
     this.setElement(this.dom)
   }
@@ -209,6 +233,15 @@ export default class PokemonDetail extends GameObjects.DOMElement {
       <>
         <div className="ability-name">{t(`ability.${skill}`)}</div>
         <AbilityTooltip ability={skill} stats={{ stars, ap, luck }} />
+      </>
+    )
+  }
+
+  updateZMoveDescription({ zmove, stars, ap, luck }: { zmove: Ability, stars: number, ap: number, luck: number }) {
+    this.zMoveRoot?.render(
+      <>
+        <div className="ability-name">{t(`ability.${zmove}`)}</div>
+        <AbilityTooltip ability={zmove} stats={{ stars, ap, luck }} />
       </>
     )
   }

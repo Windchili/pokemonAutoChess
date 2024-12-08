@@ -89,6 +89,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
   @type({ set: "string" }) types = new SetSchema<Synergy>()
   @type("uint8") stars: number
   @type("string") skill: Ability
+  @type("string") zmove: Ability
   @type("string") passive: Passive
   @type(Status) status: Status
   @type(Count) count: Count
@@ -114,6 +115,8 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
   growGroundTimer = 3000
   grassHealCooldown = 2000
   sandstormDamageTimer = 0
+  leafStormDamageTimer = 0
+  leafStormEffectTimer = 0
   fairySplashCooldown = 0
   echo = 0
   isClone = false
@@ -164,6 +167,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
     this.attackSprite = pokemon.attackSprite
     this.stars = pokemon.stars
     this.skill = pokemon.skill
+    this.zmove = pokemon.zmove
     this.passive = pokemon.passive
     this.shiny = pokemon.shiny
     this.emotion = pokemon.emotion
@@ -1373,6 +1377,9 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
           case Pkm.TAPU_FINI:
             name = Pkm.FLABEBE
             break
+          case Pkm.TAPU_LELE:
+            name = Pkm.HATENNA
+            break
           case Pkm.HAPPINY:
             name = pickRandomIn([Pkm.PICHU, Pkm.AZURILL, Pkm.IGGLYBUFF, Pkm.SMOOCHUM, Pkm.CLEFFA, Pkm.TOGEPI, Pkm.PHANPY, Pkm.MAGBY, Pkm.WYNAUT, Pkm.MIME_JR, Pkm.RIOLU, Pkm.TOXEL, Pkm.ELEKID, Pkm.BUDEW, Pkm.BONSLEY, Pkm.MUNCHLAX])
         }
@@ -1604,6 +1611,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
   // called after death (does not proc if resurection)
   onDeath({ board }: { board: Board }) {
     this.refToBoardPokemon.deathCount++
+    
     const isWorkUp = this.effects.has(Effect.BULK_UP)
     const isRage = this.effects.has(Effect.RAGE)
     const isAngerPoint = this.effects.has(Effect.ANGER_POINT)
@@ -1648,7 +1656,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
         ) {
           value.count.fieldCount++
           value.addShield(20, _pokemon, 0, false)
-          value.addAttack(4, _pokemon, 0, false)
+          value.addAttack(3, _pokemon, 0, false)
         }
       })
     }, 16)

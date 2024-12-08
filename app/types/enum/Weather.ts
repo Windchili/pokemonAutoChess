@@ -13,6 +13,7 @@ export enum Weather {
   SANDSTORM = "SANDSTORM",
   BLOODMOON = "BLOODMOON",
   SMOG = "SMOG",
+  LEAF_STORM = "LEAF_STORM",
   NEUTRAL = "NEUTRAL"
 }
 
@@ -39,6 +40,7 @@ export const WeatherAssociatedToSynergy: Map<Synergy, Weather> = new Map([
   [Synergy.FLYING, Weather.WINDY],
   [Synergy.WILD, Weather.BLOODMOON],
   [Synergy.POISON, Weather.SMOG],
+  [Synergy.GRASS, Weather.LEAF_STORM],
   [Synergy.NORMAL, Weather.NEUTRAL]
 ])
 

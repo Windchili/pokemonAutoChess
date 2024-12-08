@@ -86,6 +86,7 @@ export class Pokemon extends Schema implements IPokemon {
   @type("uint8") maxPP: number = 100
   @type("uint16") ap: number = 0
   @type("string") skill: Ability = Ability.DEFAULT
+  @type("string") zmove: Ability = Ability.DEFAULT
   @type("string") passive: Passive = Passive.NONE
   @type({ set: "string" }) items = new SetSchema<Item>()
   @type("boolean") shiny: boolean
@@ -1501,7 +1502,7 @@ export class Gastly extends Pokemon {
     Synergy.POISON,
     Synergy.AMORPHOUS
   ])
-  rarity = Rarity.ULTRA
+  rarity = Rarity.COMMON
   stars = 1
   evolution = Pkm.HAUNTER
   hp = 90
@@ -1511,6 +1512,7 @@ export class Gastly extends Pokemon {
   maxPP = 100
   range = 2
   skill = Ability.NIGHTMARE
+  zmove = Ability.NEVER_ENDING_NIGHTMARE
   attackSprite = AttackSprite.GHOST_RANGE
 }
 
@@ -1530,6 +1532,7 @@ export class Haunter extends Pokemon {
   maxPP = 100
   range = 2
   skill = Ability.NIGHTMARE
+  zmove = Ability.NEVER_ENDING_NIGHTMARE
   attackSprite = AttackSprite.GHOST_RANGE
 }
 
@@ -1548,6 +1551,7 @@ export class Gengar extends Pokemon {
   maxPP = 100
   range = 2
   skill = Ability.NIGHTMARE
+  zmove = Ability.NEVER_ENDING_NIGHTMARE
   attackSprite = AttackSprite.GHOST_RANGE
 }
 
@@ -1703,7 +1707,7 @@ export class PorygonZ extends Pokemon {
 
 export class Sewaddle extends Pokemon {
   types = new SetSchema<Synergy>([Synergy.GRASS, Synergy.BUG])
-  rarity = Rarity.ULTRA
+  rarity = Rarity.COMMON
   stars = 1
   evolution = Pkm.SWADLOON
   hp = 140
@@ -1713,6 +1717,7 @@ export class Sewaddle extends Pokemon {
   maxPP = 100
   range = 1
   skill = Ability.MANTIS_BLADES
+  zmove = Ability.CHLOROPHYLL_HURRICANE
   attackSprite = AttackSprite.BUG_MELEE
 }
 
@@ -1728,6 +1733,7 @@ export class Swadloon extends Pokemon {
   maxPP = 100
   range = 1
   skill = Ability.MANTIS_BLADES
+  zmove = Ability.CHLOROPHYLL_HURRICANE
   attackSprite = AttackSprite.BUG_MELEE
 }
 
@@ -1742,6 +1748,7 @@ export class Leavanny extends Pokemon {
   maxPP = 100
   range = 1
   skill = Ability.MANTIS_BLADES
+  zmove = Ability.CHLOROPHYLL_HURRICANE
   attackSprite = AttackSprite.BUG_MELEE
 }
 
@@ -1974,7 +1981,7 @@ export class Magmortar extends Pokemon {
 
 export class Solosis extends Pokemon {
   types = new SetSchema<Synergy>([Synergy.PSYCHIC, Synergy.AMORPHOUS])
-  rarity = Rarity.ULTRA
+  rarity = Rarity.COMMON
   stars = 1
   evolution = Pkm.DUOSION
   hp = 100
@@ -1984,6 +1991,7 @@ export class Solosis extends Pokemon {
   maxPP = 90
   range = 2
   skill = Ability.PSYCHIC
+  zmove = Ability.GENESIS_SUPERNOVA
   attackSprite = AttackSprite.PSYCHIC_RANGE
 }
 
@@ -1999,6 +2007,7 @@ export class Duosion extends Pokemon {
   maxPP = 90
   range = 2
   skill = Ability.PSYCHIC
+  zmove = Ability.GENESIS_SUPERNOVA
   attackSprite = AttackSprite.PSYCHIC_RANGE
 }
 
@@ -2013,6 +2022,7 @@ export class Reuniclus extends Pokemon {
   maxPP = 90
   range = 2
   skill = Ability.PSYCHIC
+  zmove = Ability.GENESIS_SUPERNOVA
   attackSprite = AttackSprite.PSYCHIC_RANGE
 }
 

@@ -364,6 +364,66 @@ export default class WeatherManager {
     )
   }
 
+  addLeafStorm() {
+    this.colorFilter = this.scene.add.existing(
+      new Phaser.GameObjects.Rectangle(
+        this.scene,
+        1500,
+        1000,
+        3000,
+        2000,
+        0x1ecf15,
+        0.10
+      ).setDepth(8)
+    )
+    
+    const leftScreenSource = {
+      x: { min: 0, max: 100 },
+      y: { min: 0, max: 1000 }
+    }
+
+    const deathZoneSource = new Phaser.Geom.Rectangle(0, 0, 2000, 4000)
+
+    this.particlesEmitters.push(
+      this.scene.add.particles(0, 0, "wind", {
+        ...leftScreenSource,
+        deathZone: { source: deathZoneSource, type: "onLeave" },
+        frequency: 100,
+        speedX: { min: 700, max: 1000 },
+        speedY: { min: -100, max: 100 },
+        lifespan: 2000,
+        scale: 2
+      }),
+      this.scene.add.particles(0, 0, "wind", {
+        ...leftScreenSource,
+        deathZone: { source: deathZoneSource, type: "onLeave" },
+        frequency: 100,
+        speedX: { min: 1400, max: 1800 },
+        speedY: { min: -100, max: 100 },
+        lifespan: 2000,
+        scale: 1
+      }),
+      this.scene.add.particles(0, 0, "leaf", {
+        ...leftScreenSource,
+        deathZone: { source: deathZoneSource, type: "onLeave" },
+        frequency: 100,
+        speedX: { min: 1300, max: 1600 },
+        speedY: { min: -100, max: 100 },
+        lifespan: 2000,
+        scale: 2
+      }),
+      this.scene.add.particles(0, 0, "leaf", {
+        ...leftScreenSource,
+        deathZone: { source: deathZoneSource, type: "onLeave" },
+        frequency: 100,
+        speedX: { min: 1700, max: 2000 },
+        speedY: { min: -100, max: 100 },
+        lifespan: 2000,
+        scale: 1
+      })
+    )
+  }
+
   addMist() {
     const offscreenSource = {
       x: { min: 0, max: 2000 },

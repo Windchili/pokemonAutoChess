@@ -414,7 +414,8 @@ export const WeatherThreshold: { [weather in Weather]: number } = {
   [Weather.STORM]: 8,
   [Weather.SUN]: 8,
   [Weather.WINDY]: 8,
-  [Weather.SMOG]: 8
+  [Weather.SMOG]: 8,
+  [Weather.LEAF_STORM]: 8
 }
 
 // 4  A  1
@@ -720,7 +721,7 @@ export const ItemStats: Record<Item, { [stat in Stat]?: number }> = {
   [Item.NORMALIUM_Z]: { [Stat.SHIELD]: 100 },
   [Item.GRASSIUM_Z]: { [Stat.HP]: 75 },
   [Item.FIRIUM_Z]: { [Stat.ATK]: 10 },
-  [Item.WATERIUM_Z]: { [Stat.PP]: 2000 },
+  [Item.WATERIUM_Z]: { [Stat.PP]: 200 },
   [Item.ELECTRIUM_Z]: { [Stat.ATK]: -5, [Stat.ATK_SPEED]: 65 },
   [Item.FIGHTINIUM_Z]:{ [Stat.DEF]: 7, [Stat.SPE_DEF]: 7 },
   [Item.PSYCHIUM_Z]: { [Stat.AP]: 100 },

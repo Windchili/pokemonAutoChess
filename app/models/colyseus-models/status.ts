@@ -4,13 +4,15 @@ import { PokemonEntity } from "../../core/pokemon-entity"
 import { IPokemonEntity, IStatus, Transfer } from "../../types"
 import { Ability } from "../../types/enum/Ability"
 import { Effect } from "../../types/enum/Effect"
-import { AttackType } from "../../types/enum/Game"
+import { AttackType, Team } from "../../types/enum/Game"
 import { Item } from "../../types/enum/Item"
 import { Passive } from "../../types/enum/Passive"
 import { Weather } from "../../types/enum/Weather"
 import { count } from "../../utils/array"
 import { max, min } from "../../utils/number"
 import { chance } from "../../utils/random"
+import Simulation from "../../core/simulation"
+import { logger } from "../../utils/logger"
 
 export default class Status extends Schema implements IStatus {
   @type("boolean") burn = false
@@ -26,6 +28,8 @@ export default class Status extends Schema implements IStatus {
   @type("boolean") resurecting = false
   @type("boolean") paralysis = false
   @type("boolean") pokerus = false
+  @type("boolean") possessed = false
+  @type("boolean") delayedKo = false
   @type("boolean") locked = false
   @type("boolean") armorReduction = false
   @type("boolean") runeProtect = false
@@ -86,7 +90,9 @@ export default class Status extends Schema implements IStatus {
   drySkinCooldown = 1000
   curseCooldown = 0
   pokerusCooldown = 2000
+  possessedCooldown = 0
   lockedCooldown = 0
+  delayedKoCooldown = 0
   enrageDelay = 35000
   darkHarvest = false
   darkHarvestCooldown = 0
@@ -105,6 +111,7 @@ export default class Status extends Schema implements IStatus {
     this.confusionCooldown = 0
     this.woundCooldown = 0
     this.paralysisCooldown = 0
+    this.possessedCooldown = 0
     this.charmCooldown = 0
     this.flinchCooldown = 0
     this.armorReductionCooldown = 0
@@ -128,7 +135,8 @@ export default class Status extends Schema implements IStatus {
       this.flinch ||
       this.armorReduction ||
       this.curse ||
-      this.locked
+      this.locked ||
+      this.possessed
     )
   }
 
@@ -201,6 +209,10 @@ export default class Status extends Schema implements IStatus {
       this.updatePokerus(dt, pokemon, board)
     }
 
+    if (this.possessed) {
+      this.updatePossessed(dt, pokemon)
+    }
+
     if (this.armorReduction) {
       this.updateArmorReduction(dt)
     }
@@ -243,6 +255,10 @@ export default class Status extends Schema implements IStatus {
 
     if (this.curse) {
       this.updateCurse(dt, board, pokemon)
+    }
+
+    if (this.delayedKo) {
+      this.updateDelayedKO(dt, board, pokemon)
     }
 
     if (!this.enraged) {
@@ -1068,6 +1084,30 @@ export default class Status extends Schema implements IStatus {
     }
   }
 
+  triggerDelayedKO(timer: number) {
+    if (this.delayedKo) {
+      this.delayedKoCooldown = 0 // apply curse immediately if already cursed
+    } else {
+      this.delayedKo = true
+      this.delayedKoCooldown = timer
+    }
+  }
+
+  updateDelayedKO(dt: number, board: Board, pokemon: PokemonEntity) {
+    if (this.delayedKoCooldown - dt <= 0) {
+      this.delayedKo = false
+      pokemon.handleDamage({
+        damage: 9999,
+        board,
+        attacker: null,
+        attackType: AttackType.TRUE,
+        shouldTargetGainMana: false
+      })
+    } else {
+      this.delayedKoCooldown -= dt
+    }
+  }
+
   triggerPokerus() {
     if (!this.pokerus) {
       this.pokerus = true
@@ -1098,6 +1138,63 @@ export default class Status extends Schema implements IStatus {
       this.pokerusCooldown = 2000
     } else {
       this.pokerusCooldown -= dt
+    }
+  }
+
+  triggerPossessed(duration: number, pkm: PokemonEntity) {
+    if (
+      !this.runeProtect
+    ) {
+      let pkmTeam = pkm.simulation.blueTeam
+      if (pkm.team === Team.RED_TEAM) {
+        pkmTeam = pkm.simulation.redTeam
+      }
+      
+      if (1 !== pkmTeam.size) {
+        this.possessed = true
+        duration = this.applyAquaticReduction(duration, pkm)
+
+        if (pkm.team === Team.BLUE_TEAM) {
+          pkm.team = Team.RED_TEAM
+        } else {
+          pkm.team = Team.BLUE_TEAM
+        }
+
+        if (duration > this.possessedCooldown) {
+          this.possessedCooldown = Math.round(duration)
+        }
+      }
+    }
+  }
+
+  updatePossessed(dt: number, pkm: PokemonEntity) {
+    let possessedCount = 0
+    let pkmTeam = pkm.simulation.blueTeam
+    let otherTeam = pkm.simulation.redTeam
+    if (pkm.team === Team.RED_TEAM) {
+      pkmTeam = pkm.simulation.redTeam
+      otherTeam = pkm.simulation.blueTeam
+    }
+
+    otherTeam.forEach((pokemon) => {
+      if (pokemon.status.possessed) {
+        possessedCount++
+      }
+    })
+
+    if (
+      this.possessedCooldown - dt <= 0 ||
+      possessedCount === otherTeam.size
+    ) {
+      this.possessed = false
+
+      if (pkm.team === Team.BLUE_TEAM) {
+        pkm.team = Team.RED_TEAM
+      } else {
+        pkm.team = Team.BLUE_TEAM
+      }
+    } else {
+      this.possessedCooldown -= dt
     }
   }
 

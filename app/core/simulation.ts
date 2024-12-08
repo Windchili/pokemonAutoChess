@@ -27,12 +27,15 @@ import {
   Berries,
   CraftableItems,
   Item,
-  WeatherRocksByWeather
+  WeatherRocksByWeather,
+  ZCrystals,
+  ZCrystalSynergies
 } from "../types/enum/Item"
 import { Passive } from "../types/enum/Passive"
 import { Pkm } from "../types/enum/Pokemon"
 import { Synergy } from "../types/enum/Synergy"
 import { Weather } from "../types/enum/Weather"
+import { Ability } from "../types/enum/Ability"
 import { IPokemonData } from "../types/interfaces/PokemonData"
 import { count } from "../utils/array"
 import { logger } from "../utils/logger"
@@ -143,9 +146,9 @@ export default class Simulation extends Schema implements ISimulation {
     // afterSimulationStart hooks
     for (const player of [this.bluePlayer, this.redPlayer]) {
       if (player) {
-        const entityTeam =
+        let entityTeam =
           player.team === Team.BLUE_TEAM ? this.blueTeam : this.redTeam
-        const opponentTeam =
+        let opponentTeam =
           player.team === Team.BLUE_TEAM ? this.redTeam : this.blueTeam
         player.board.forEach((pokemon) => {
           const entity = values(entityTeam).find(
@@ -362,6 +365,15 @@ export default class Simulation extends Schema implements ISimulation {
       Object.entries(ItemStats[item]).forEach(([stat, value]) =>
         pokemon.applyStat(stat as Stat, value)
       )
+    }
+
+    if (
+      item &&
+      (ZCrystals as readonly string[]).includes(item) &&
+      pokemon.zmove !== Ability.DEFAULT
+    ) {
+      pokemon.skill = pokemon.zmove
+      pokemon.zmove = Ability.DEFAULT
     }
 
     if (item === Item.SOUL_DEW) {

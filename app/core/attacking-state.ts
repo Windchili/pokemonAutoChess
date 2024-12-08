@@ -2,6 +2,7 @@ import Player from "../models/colyseus-models/player"
 import { PokemonActionState } from "../types/enum/Game"
 import { Item } from "../types/enum/Item"
 import { Weather } from "../types/enum/Weather"
+import { Ability, ZMoves } from "../types/enum/Ability"
 import { distanceC } from "../utils/distance"
 import { chance } from "../utils/random"
 import { AbilityStrategies } from "./abilities/abilities"
@@ -86,6 +87,9 @@ export default class AttackingState extends PokemonState {
           target,
           crit
         )
+        if (ZMoves.includes(pokemon.skill)) {
+          pokemon.skill = pokemon.refToBoardPokemon.skill
+        }
       } else {
         // BASIC ATTACK
         pokemon.count.attackCount++

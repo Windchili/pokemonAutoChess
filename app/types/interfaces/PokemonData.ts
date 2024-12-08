@@ -8,6 +8,7 @@ export interface IPokemonData {
   name: Pkm
   index: string
   skill: Ability
+  zmove: Ability
   passive: Passive
   stars: number
   rarity: Rarity

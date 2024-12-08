@@ -1401,7 +1401,7 @@ export class OnUpdatePhaseCommand extends Command<GameRoom> {
             
               name: "totem_pokemon",
               avatar: Pkm[pveTotem],
-              emotion: Emotion.ANGRY,
+              emotion: Emotion.NORMAL,
               board: [
                 [Pkm[pveTotem], 4, 2]
               ]

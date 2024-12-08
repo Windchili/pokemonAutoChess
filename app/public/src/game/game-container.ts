@@ -115,6 +115,7 @@ class GameContainer {
       "grassField",
       "paralysis",
       "pokerus",
+      "possessed",
       "poisonStacks",
       "protect",
       "skydiving",
@@ -508,6 +509,8 @@ class GameContainer {
           this.gameScene.weatherManager.addMist()
         } else if (value === Weather.SMOG) {
           this.gameScene.weatherManager.addSmog()
+        } else if (value === Weather.LEAF_STORM) {
+          this.gameScene.weatherManager.addLeafStorm()
         }
       }
     }

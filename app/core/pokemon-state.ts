@@ -752,6 +752,41 @@ export default abstract class PokemonState {
       }
     }
 
+    if (pokemon.simulation.weather === Weather.LEAF_STORM) {
+      pokemon.leafStormDamageTimer -= dt
+      pokemon.leafStormEffectTimer -= dt
+      if (pokemon.types.has(Synergy.GRASS) === false){
+        if (pokemon.leafStormDamageTimer <= 0 && !pokemon.simulation.finished) {
+          pokemon.leafStormDamageTimer = 1000
+          let leafStormDamage = 5
+          const nbSmoothRocks = player ? count(player.items, Item.SMOOTH_ROCK) : 0
+          if (nbSmoothRocks > 0) {
+            leafStormDamage -= nbSmoothRocks
+            pokemon.addAttackSpeed(nbSmoothRocks, pokemon, 0, false)
+          }
+          pokemon.handleDamage({
+            damage: leafStormDamage,
+            board,
+            attackType: AttackType.SPECIAL,
+            attacker: null,
+            shouldTargetGainMana: false
+          })
+        }
+        if (pokemon.leafStormEffectTimer <= 0 && !pokemon.simulation.finished) {
+          pokemon.leafStormEffectTimer = 7000
+          const status = pickRandomIn(["sleep","paralyze"])
+          switch (status) {
+            case "sleep":
+              pokemon.status.triggerSleep(3000, pokemon)
+              break
+            case "paralyze":
+              pokemon.status.triggerParalysis(3000, pokemon, null)
+              break
+          }
+        }
+      }
+    }
+
     if (pokemon.oneSecondCooldown <= 0) {
       this.updateEachSecond(pokemon, board)
       pokemon.oneSecondCooldown = 1000

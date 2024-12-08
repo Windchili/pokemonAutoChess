@@ -137,6 +137,7 @@ export default class LoadingManager {
     scene.load.image("smog", "/assets/ui/smog.png")
     scene.load.image("sun", "/assets/ui/sun.png")
     scene.load.image("clouds", "/assets/ui/clouds.png")
+    scene.load.image("leaf", "/assets/ui/leaf.png")
     scene.load.multiatlas(
       "snowflakes",
       "/assets/ui/snowflakes.json",

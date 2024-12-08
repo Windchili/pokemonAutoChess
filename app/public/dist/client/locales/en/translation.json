@@ -412,7 +412,10 @@
     "CORE_ENFORCER": "Core Enforcer",
     "POWER_HUG": "Power Hug",
     "MORTAL_SPIN": "Mortal Spin",
-    "METAL_CLAW": "Metal Claw"
+    "METAL_CLAW": "Metal Claw",
+    "NEVER_ENDING_NIGHTMARE": "Never-Ending Nightmare",
+    "CHLOROPHYLL_HURRICANE": "Chlorophyll Hurricane",
+    "GENESIS_SUPERNOVA": "Genesis Supernova"
   },
   "pkm": {
     "DEFAULT": "MissingNo.",
@@ -1672,8 +1675,11 @@
     "THOUSAND_ARROWS": "33 energy arrows rain down on random tiles, dealing [60,SP] SPECIAL each. All enemies hit are LOCKED for 1 second.",
     "CORE_ENFORCER": "Deal [150,SP] SPECIAL to the target. The target is LOCKED and SILENCE for 3 seconds.",
     "POWER_HUG": "Deal [40,80,SP] SPECIAL to the target. Inflict LOCKED and PARALYSIS for 3 seconds.",
-    "MORTAL_SPIN": "Knock back any Pokemon targeting the user in melee range. Deal [20,30,40,SP] SPECIAL to any enemies hit, and apply POISONNED for 4 seconds",
-    "METAL_CLAW": "Deal [10,20,40,SP] TRUE to the target and raise the user's ATK by [2,4,6]."
+    "MORTAL_SPIN": "Knock back any Pokémon targeting the user in melee range. Deal [20,30,40,SP] SPECIAL to any enemies hit, and apply POISONNED for 4 seconds",
+    "METAL_CLAW": "Deal [10,20,40,SP] TRUE to the target and raise the user's ATK by [2,4,6].",
+    "NEVER_ENDING_NIGHTMARE": "[1,2,3] random enemies are POSSESSED by this Pokémon for [7,SP] seconds.",
+    "CHLOROPHYLL_HURRICANE": "Deal [20,30,50,SP] SPECIAL to all enemies, and force the weather to LEAF_STORM. If the weather is already LEAF_STORM, deal an additional [10,30,50] SPECIAL.",
+    "GENESIS_SUPERNOVA": "Spawn [5,10,15] $t(pkm.SOLOSIS), which despawn after [5,SP=0.5] seconds."
   },
   "effect": {
     "INGRAIN": "Ingrain",
@@ -2193,7 +2199,7 @@
     "GROUNDIUM_Z": "Groundium Z",
     "POISONIUM_Z": "+100 SHIELD, +8 DEF, +8 SPE_DEF, +10 ATK, but holder is POISONNED. Give to an Ultra Pokémon for a one-use Z-Move",
     "DRAGONIUM_Z": "+1 STAR. Give to an Ultra Pokémon for a one-use Z-Move",
-    "FIELDIUM_Z": "+20 SHIELD and +4 ATK upon each ally KO. Give to an Ultra Pokémon for a one-use Z-Move",
+    "FIELDIUM_Z": "+20 SHIELD and +3 ATK upon each ally KO. Give to an Ultra Pokémon for a one-use Z-Move",
     "MONSTERIUM_Z": "+50 HP, +20 ATK, -50 DEF, -50 SPE_DEF. Give to an Ultra Pokémon for a one-use Z-Move",
     "HUMANIUM_Z": "+7 ATK, +50 AP. Give to an Ultra Pokémon for a one-use Z-Move",
     "AQUATINIUM_Z": "Gain RUNE_PROTECT, 40% Move Speed, and 20% ATK_SPEED. Give to an Ultra Pokémon for a one-use Z-Move",
@@ -2390,6 +2396,7 @@
     "RESURECTION": "Resurrection",
     "PARALYSIS": "Paralysis",
     "POKERUS": "Pokérus",
+    "POSSESSED": "Possessed",
     "LOCKED": "Locked",
     "ARMOR_REDUCTION": "Armor Reduction",
     "CHARM": "Infatuation",
@@ -2415,6 +2422,7 @@
     "RESURECTION": "Prevents KO once, restoring to max HP",
     "PARALYSIS": "Reduce ATK_SPEED and move speed by 40%, prevents dodging attacks",
     "POKERUS": "Every 2 seconds, gain 1 ATK and 10 AP before infecting 2 adjacent allies with POKERUS",
+    "POSSESSED": "Fight for the other team temporarily. Fails or cancels if the target is the only enemy remaining",
     "ARMOR_REDUCTION": "Reduce DEF & SPE_DEF by 50%",
     "CHARM": "Prevents attacking the target and forces to get closer to it",
     "FLINCH": "50% of incoming damage bypass SHIELD",
@@ -2652,7 +2660,8 @@
     "SNOW": "Snow",
     "SANDSTORM": "Sandstorm",
     "BLOODMOON": "Blood Moon",
-    "SMOG": "Smog"
+    "SMOG": "Smog",
+    "LEAF_STORM": "Leaf Storm"
   },
   "weather_description": {
     "NEUTRAL": "Normal weather. No effects.",
@@ -2665,7 +2674,8 @@
     "SNOW": "-25% movement speed\n+30% FREEZE duration",
     "SANDSTORM": "5 SPECIAL per second (GROUND are immune)\n+30% CONFUSION duration",
     "BLOODMOON": "+20% PHYSICAL\n+30% WOUND duration",
-    "SMOG": "-15% accuracy\n+30% POISONNED duration"
+    "SMOG": "-15% accuracy\n+30% POISONNED duration",
+    "LEAF_STORM": "5 PHYSICAL per second\nEvery 7 seconds, inflict 3 seconds of POISONNED, PARALYSIS, or SLEEP\n(GRASS are immune)"
   },
   "emotion": {
     "Normal": "Normal",
@@ -2754,6 +2764,7 @@
   "third_place": "Third Place",
   "th_place": "th Place",
   "ability_label": "Ability",
+  "zmove_label": "Z-Move",
   "rank": "Rank",
   "player": "Player",
   "stats": "Stats",

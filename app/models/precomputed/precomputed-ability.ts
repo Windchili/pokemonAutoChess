@@ -12,9 +12,9 @@ Object.values(Ability).map((ability) => {
     precomputedPokemons
       .filter(
         (pokemon) =>
-          pokemon.skill !== Ability.DEFAULT || pokemon.passive !== Passive.NONE
+          pokemon.skill !== Ability.DEFAULT || pokemon.passive !== Passive.NONE || pokemon.zmove !== Ability.DEFAULT
       )
-      .filter((pokemon) => pokemon.skill === ability)
+      .filter((pokemon) => pokemon.skill === ability || pokemon.zmove === ability)
       .map((pokemon) => pokemon.name)
   )
 })

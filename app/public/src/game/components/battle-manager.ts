@@ -236,7 +236,13 @@ export default class BattleManager {
         } else {
           pkm.removePokerus()
         }
-      } else if (field === "locked") {
+      } else if (field === "possessed") {
+        if (pokemon.status.possessed) {
+          pkm.addPossessed()
+        } else {
+          pkm.removePossessed()
+        }
+      }  else if (field === "locked") {
         if (pokemon.status.locked) {
           pkm.addLocked()
         } else {

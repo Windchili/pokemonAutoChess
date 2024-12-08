@@ -28,6 +28,7 @@ import {
 } from "../../../../types/enum/Game"
 import type { Passive } from "../../../../types/enum/Passive"
 import { Pkm } from "../../../../types/enum/Pokemon"
+import { Item } from "../../../../types/enum/Item"
 import type { Synergy } from "../../../../types/enum/Synergy"
 import { clamp, min } from "../../../../utils/number"
 import { chance } from "../../../../utils/random"
@@ -62,7 +63,9 @@ export default class PokemonSprite extends DraggableObject {
   targetX: number | null
   targetY: number | null
   skill: Ability
+  zmove: Ability
   passive: Passive
+  items: SetSchema<Item>
   positionX: number
   positionY: number
   attackSprite: AttackSprite
@@ -95,6 +98,7 @@ export default class PokemonSprite extends DraggableObject {
   confusion: GameObjects.Sprite | undefined
   paralysis: GameObjects.Sprite | undefined
   pokerus: GameObjects.Sprite | undefined
+  possessed: GameObjects.Sprite | undefined
   locked: GameObjects.Sprite | undefined
   armorReduction: GameObjects.Sprite | undefined
   charm: GameObjects.Sprite | undefined
@@ -159,8 +163,10 @@ export default class PokemonSprite extends DraggableObject {
     this.atkSpeed = pokemon.atkSpeed
     this.targetX = null
     this.targetY = null
-    this.skill = pokemon.skill
-    this.passive = pokemon.passive
+    this.skill = pokemon.skill,
+    this.zmove = pokemon.zmove,
+    this.passive = pokemon.passive,
+    this.items = pokemon.items
     this.positionX = pokemon.positionX
     this.positionY = pokemon.positionY
     this.attackSprite = pokemon.attackSprite
@@ -336,7 +342,9 @@ export default class PokemonSprite extends DraggableObject {
       this.shiny,
       this.index,
       this.stars,
-      this.evolution
+      this.evolution,
+      this.zmove,
+      this.items
     )
     this.detail.setPosition(
       this.detail.width / 2 + 40,
@@ -744,6 +752,25 @@ export default class PokemonSprite extends DraggableObject {
     if (this.pokerus) {
       this.remove(this.pokerus, true)
       this.pokerus = undefined
+    }
+  }
+
+  addPossessed() {
+    if (!this.possessed) {
+      this.sprite.setAlpha(0.6)
+      this.possessed = this.scene.add
+        .sprite(0, 0, "status", "POSSESSED/000.png")
+        .setScale(2)
+      this.possessed.anims.play("POSSESSED")
+      this.add(this.possessed)
+    }
+  }
+
+  removePossessed() {
+    if (this.possessed) {
+      this.sprite.setAlpha(1)
+      this.remove(this.possessed, true)
+      this.possessed = undefined
     }
   }
 
