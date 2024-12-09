@@ -405,6 +405,7 @@ export interface IPokemon {
   ap: number
   skill: Ability
   zmove: Ability
+  zmovePP: number
   passive: Passive
   items: SetSchema<Item>
   shiny: boolean
@@ -599,6 +600,7 @@ export interface IPokemonEntity {
   stars: number
   skill: Ability
   zmove: Ability
+  zmovePP: number
   passive: Passive
   status: Status
   count: Count

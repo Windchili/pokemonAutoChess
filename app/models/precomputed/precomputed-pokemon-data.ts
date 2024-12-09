@@ -22,6 +22,8 @@ precomputedPokemons.forEach((pokemon) => {
     regional: pokemon.regional,
     hp: pokemon.hp,
     range: pokemon.range,
+    zmove: pokemon.zmove,
+    zmovePP: pokemon.zmovePP,
     types: values(pokemon.types) as Synergy[],
     evolution: pokemon.evolution === Pkm.DEFAULT ? null : pokemon.evolution,
     stages:
@@ -62,8 +64,10 @@ export function getPokemonData(name: Pkm): IPokemonData {
     stars: 1,
     stages: 1,
     skill: Ability.DEFAULT,
+    zmove: Ability.DEFAULT,
     passive: Passive.NONE,
     types: [],
-    evolution: null
+    evolution: null,
+    zmovePP: 100
   }
 }

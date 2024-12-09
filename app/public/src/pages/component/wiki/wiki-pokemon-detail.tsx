@@ -9,7 +9,7 @@ import { Passive } from "../../../../../types/enum/Passive"
 import { Pkm, PkmIndex } from "../../../../../types/enum/Pokemon"
 import { getPortraitSrc } from "../../../../../utils/avatar"
 import { addIconsToDescription } from "../../utils/descriptions"
-import { AbilityTooltip } from "../ability/ability-tooltip"
+import { AbilityTooltip, ZMoveTooltip } from "../ability/ability-tooltip"
 import { GamePokemonDetail } from "../game/game-pokemon-detail"
 import SynergyIcon from "../icons/synergy-icon"
 import Credits from "./Credits"
@@ -123,9 +123,9 @@ export default function WikiPokemonDetail(props: { pokemon: Pkm }) {
             <dt>{t("zmove_label")}</dt>
             <dd>
               {t(`ability.${pokemon.zmove}`)}
-              <AbilityTooltip
+              <ZMoveTooltip
                 ability={pokemonData.zmove}
-                stats={{ ap: 0, luck: 0, stars: pokemonData.stars }}
+                stats={{ ap: 0, luck: 0, stars: pokemonData.stars, pp: pokemonData.zmovePP }}
               />
             </dd>
           </>

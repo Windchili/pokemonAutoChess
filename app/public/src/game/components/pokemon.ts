@@ -64,6 +64,7 @@ export default class PokemonSprite extends DraggableObject {
   targetY: number | null
   skill: Ability
   zmove: Ability
+  zmovePP: number
   passive: Passive
   items: SetSchema<Item>
   positionX: number
@@ -165,6 +166,7 @@ export default class PokemonSprite extends DraggableObject {
     this.targetY = null
     this.skill = pokemon.skill,
     this.zmove = pokemon.zmove,
+    this.zmovePP = pokemon.zmovePP,
     this.passive = pokemon.passive,
     this.items = pokemon.items
     this.positionX = pokemon.positionX
@@ -344,6 +346,7 @@ export default class PokemonSprite extends DraggableObject {
       this.stars,
       this.evolution,
       this.zmove,
+      this.zmovePP,
       this.items
     )
     this.detail.setPosition(

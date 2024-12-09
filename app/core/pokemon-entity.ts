@@ -90,6 +90,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
   @type("uint8") stars: number
   @type("string") skill: Ability
   @type("string") zmove: Ability
+  @type("number") zmovePP: number
   @type("string") passive: Passive
   @type(Status) status: Status
   @type(Count) count: Count
@@ -168,6 +169,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
     this.stars = pokemon.stars
     this.skill = pokemon.skill
     this.zmove = pokemon.zmove
+    this.zmovePP = pokemon.zmovePP
     this.passive = pokemon.passive
     this.shiny = pokemon.shiny
     this.emotion = pokemon.emotion

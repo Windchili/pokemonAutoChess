@@ -87,6 +87,7 @@ export class Pokemon extends Schema implements IPokemon {
   @type("uint16") ap: number = 0
   @type("string") skill: Ability = Ability.DEFAULT
   @type("string") zmove: Ability = Ability.DEFAULT
+  @type("number") zmovePP: number = 100
   @type("string") passive: Passive = Passive.NONE
   @type({ set: "string" }) items = new SetSchema<Item>()
   @type("boolean") shiny: boolean
@@ -1513,6 +1514,7 @@ export class Gastly extends Pokemon {
   range = 2
   skill = Ability.NIGHTMARE
   zmove = Ability.NEVER_ENDING_NIGHTMARE
+  zmovePP = 70
   attackSprite = AttackSprite.GHOST_RANGE
 }
 
@@ -1533,6 +1535,7 @@ export class Haunter extends Pokemon {
   range = 2
   skill = Ability.NIGHTMARE
   zmove = Ability.NEVER_ENDING_NIGHTMARE
+  zmovePP = 70
   attackSprite = AttackSprite.GHOST_RANGE
 }
 
@@ -1552,6 +1555,7 @@ export class Gengar extends Pokemon {
   range = 2
   skill = Ability.NIGHTMARE
   zmove = Ability.NEVER_ENDING_NIGHTMARE
+  zmovePP = 70
   attackSprite = AttackSprite.GHOST_RANGE
 }
 
@@ -1718,6 +1722,7 @@ export class Sewaddle extends Pokemon {
   range = 1
   skill = Ability.MANTIS_BLADES
   zmove = Ability.CHLOROPHYLL_HURRICANE
+  zmovePP = 60
   attackSprite = AttackSprite.BUG_MELEE
 }
 
@@ -1734,6 +1739,7 @@ export class Swadloon extends Pokemon {
   range = 1
   skill = Ability.MANTIS_BLADES
   zmove = Ability.CHLOROPHYLL_HURRICANE
+  zmovePP = 60
   attackSprite = AttackSprite.BUG_MELEE
 }
 
@@ -1749,6 +1755,7 @@ export class Leavanny extends Pokemon {
   range = 1
   skill = Ability.MANTIS_BLADES
   zmove = Ability.CHLOROPHYLL_HURRICANE
+  zmovePP = 60
   attackSprite = AttackSprite.BUG_MELEE
 }
 
@@ -1992,6 +1999,7 @@ export class Solosis extends Pokemon {
   range = 2
   skill = Ability.PSYCHIC
   zmove = Ability.GENESIS_SUPERNOVA
+  zmovePP = 50
   attackSprite = AttackSprite.PSYCHIC_RANGE
 }
 
@@ -2008,6 +2016,7 @@ export class Duosion extends Pokemon {
   range = 2
   skill = Ability.PSYCHIC
   zmove = Ability.GENESIS_SUPERNOVA
+  zmovePP = 50
   attackSprite = AttackSprite.PSYCHIC_RANGE
 }
 
@@ -2023,6 +2032,7 @@ export class Reuniclus extends Pokemon {
   range = 2
   skill = Ability.PSYCHIC
   zmove = Ability.GENESIS_SUPERNOVA
+  zmovePP = 50
   attackSprite = AttackSprite.PSYCHIC_RANGE
 }
 

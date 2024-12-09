@@ -16,3 +16,16 @@ export function AbilityTooltip(props: {
     </p>
   )
 }
+
+export function ZMoveTooltip(props: {
+  ability: Ability
+  stats?: { stars: number, ap: number, luck: number, pp: number }
+}) {
+  const { t } = useTranslation()
+  const description = t(`ability_description.${props.ability}`)
+  return (
+    <p className="ability-description">
+      {addIconsToDescription(description, props.stats)}
+    </p>
+  )
+}

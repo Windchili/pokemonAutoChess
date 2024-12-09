@@ -2675,7 +2675,7 @@
     "SANDSTORM": "5 SPECIAL per second (GROUND are immune)\n+30% CONFUSION duration",
     "BLOODMOON": "+20% PHYSICAL\n+30% WOUND duration",
     "SMOG": "-15% accuracy\n+30% POISONNED duration",
-    "LEAF_STORM": "5 PHYSICAL per second\nEvery 7 seconds, inflict 3 seconds of POISONNED, PARALYSIS, or SLEEP\n(GRASS are immune)"
+    "LEAF_STORM": "3 PHYSICAL per second\nEvery 7 seconds, inflict 3 seconds of PARALYSIS or SLEEP\n(GRASS are immune)"
   },
   "emotion": {
     "Normal": "Normal",

@@ -758,7 +758,7 @@ export default abstract class PokemonState {
       if (pokemon.types.has(Synergy.GRASS) === false){
         if (pokemon.leafStormDamageTimer <= 0 && !pokemon.simulation.finished) {
           pokemon.leafStormDamageTimer = 1000
-          let leafStormDamage = 5
+          let leafStormDamage = 3
           const nbSmoothRocks = player ? count(player.items, Item.SMOOTH_ROCK) : 0
           if (nbSmoothRocks > 0) {
             leafStormDamage -= nbSmoothRocks

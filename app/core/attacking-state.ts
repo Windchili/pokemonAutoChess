@@ -89,6 +89,7 @@ export default class AttackingState extends PokemonState {
         )
         if (ZMoves.includes(pokemon.skill)) {
           pokemon.skill = pokemon.refToBoardPokemon.skill
+          pokemon.maxPP = pokemon.refToBoardPokemon.maxPP
         }
       } else {
         // BASIC ATTACK

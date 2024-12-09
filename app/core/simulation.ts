@@ -373,6 +373,7 @@ export default class Simulation extends Schema implements ISimulation {
       pokemon.zmove !== Ability.DEFAULT
     ) {
       pokemon.skill = pokemon.zmove
+      pokemon.maxPP = pokemon.zmovePP
       pokemon.zmove = Ability.DEFAULT
     }
 

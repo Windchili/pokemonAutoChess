@@ -60,6 +60,7 @@ export default class PokemonDetail extends GameObjects.DOMElement {
     stars: number,
     evolution: Pkm,
     zmove: Ability,
+    zmovePP: number,
     items: SetSchema<Item>
   ) {
     super(scene, x, y)
@@ -202,9 +203,11 @@ export default class PokemonDetail extends GameObjects.DOMElement {
     }
 
     let zCrystalCheck = false
+    let zcrystal
     items.forEach((item) => {
       if ((ZCrystals as readonly string[]).includes(item)) {
         zCrystalCheck = true
+        zcrystal = item
       }
     })
 
@@ -215,7 +218,7 @@ export default class PokemonDetail extends GameObjects.DOMElement {
       const zMoveDiv = document.createElement("div")
       zMoveDiv.className = "game-pokemon-detail-zmove"
       this.zMoveRoot = ReactDOM.createRoot(zMoveDiv)
-      this.updateZMoveDescription({ zmove, stars, ap, luck })
+      this.updateZMoveDescription({ zmove, zmovePP, zcrystal, stars, ap, luck })
       wrap.appendChild(zMoveDiv)
     }
 
@@ -237,10 +240,18 @@ export default class PokemonDetail extends GameObjects.DOMElement {
     )
   }
 
-  updateZMoveDescription({ zmove, stars, ap, luck }: { zmove: Ability, stars: number, ap: number, luck: number }) {
+  updateZMoveDescription({ zmove, zmovePP, zcrystal, stars, ap, luck }: { zmove: Ability, zmovePP: number, zcrystal: Item, stars: number, ap: number, luck: number }) {
     this.zMoveRoot?.render(
       <>
-        <div className="ability-name">{t(`ability.${zmove}`)}</div>
+        <div className="ability-name">
+          <div className="name">{t(`ability.${zmove}`)}</div>
+          <div className="pp">
+            <img src={`assets/icons/PP.png`} alt={"pp"}/>{zmovePP}
+          </div>
+          <div className="crystal">
+            <img src={`assets/item/${zcrystal}.png`}/>
+          </div>
+        </div>
         <AbilityTooltip ability={zmove} stats={{ stars, ap, luck }} />
       </>
     )
