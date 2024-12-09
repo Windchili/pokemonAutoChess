@@ -276,12 +276,11 @@ export class PickupStrategy extends AbilityStrategy {
 
     if (target.items.size > 0 && pokemon.items.size < 3) {
       const item = target.items.values().next().value
-      target.items.delete(item)
+      target.removeItem(item)
       if (item === Item.MAX_REVIVE && target.status.resurection) {
         target.status.resurection = false
       }
-      pokemon.items.add(item)
-      pokemon.simulation.applyItemEffect(pokemon, item)
+      pokemon.addItem(item)
     } else {
       if (target.player) {
         const moneyStolen = max(target.player.money)(pokemon.stars)
@@ -977,8 +976,7 @@ export class SchoolingStrategy extends AbilityStrategy {
     if (pokemon.player && !pokemon.isGhostOpponent) {
       pokemon.player.board.forEach((ally, id) => {
         if (ally && ally.name === Pkm.WISHIWASHI && isOnBench(ally)) {
-          pokemon.addMaxHP(50, pokemon, 0, false)
-          pokemon.refToBoardPokemon.hp += 50
+          pokemon.addMaxHP(50, pokemon, 0, false, true)
           pokemon.player!.board.delete(id)
         }
       })
@@ -1451,24 +1449,43 @@ export class BonemerangStrategy extends AbilityStrategy {
     crit: boolean
   ) {
     super.process(pokemon, state, board, target, crit)
-    let damage = 0
-    switch (pokemon.stars) {
-      case 1:
-        damage = 30
-        break
-      case 2:
-        damage = 60
-        break
-      case 3:
-        damage = 90
-        break
-      default:
-        break
-    }
+    const damage = [15, 30, 60][pokemon.stars - 1] ?? 60
+
+    const hit = () =>
+      effectInLine(board, pokemon, target, (cell) => {
+        if (cell.value != null && cell.value.team !== pokemon.team) {
+          cell.value.handleSpecialDamage(
+            damage,
+            board,
+            AttackType.SPECIAL,
+            pokemon,
+            crit
+          )
+        }
+      })
+
+    hit()
+    pokemon.commands.push(new DelayedCommand(hit, 1000))
+  }
+}
+
+export class ShadowBoneStrategy extends AbilityStrategy {
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+    const damage = [30, 60, 120][pokemon.stars - 1] ?? 120
 
     board.forEach((x: number, y: number, tg: PokemonEntity | undefined) => {
       if (tg && pokemon.team != tg.team && x == target.positionX) {
         tg.handleSpecialDamage(damage, board, AttackType.SPECIAL, pokemon, crit)
+        if (chance(0.5, pokemon)) {
+          tg.addDefense(-3, pokemon, 1, crit)
+        }
       }
     })
   }
@@ -1483,21 +1500,7 @@ export class AuroraBeamStrategy extends AbilityStrategy {
     crit: boolean
   ) {
     super.process(pokemon, state, board, target, crit)
-    let damage = 0
-    switch (pokemon.stars) {
-      case 1:
-        damage = 25
-        break
-      case 2:
-        damage = 50
-        break
-      case 3:
-        damage = 100
-        break
-      default:
-        break
-    }
-
+    const damage = [25, 50, 100][pokemon.stars - 1] ?? 100
     effectInLine(board, pokemon, target, (cell) => {
       if (cell.value != null && cell.value.team !== pokemon.team) {
         cell.value.handleSpecialDamage(
@@ -1865,29 +1868,29 @@ export class ShadowCloneStrategy extends AbilityStrategy {
     crit: boolean
   ) {
     super.process(pokemon, state, board, target, crit)
-    const farthestCoordinate =
-      board.getFarthestTargetCoordinateAvailablePlace(pokemon)
+    const spawnPosition = board.getClosestAvailablePlace(
+      pokemon.positionX,
+      pokemon.positionY
+    )
 
-    if (farthestCoordinate) {
+    if (spawnPosition) {
       const p = PokemonFactory.createPokemonFromName(pokemon.name)
-      if (pokemon.items.size > 0) {
-        const itemGiven = pickRandomIn(values(pokemon.items))
-        p.items.add(itemGiven)
-        pokemon.items.delete(itemGiven)
-        if (itemGiven === Item.MAX_REVIVE && pokemon.status.resurection) {
-          pokemon.status.resurection = false
-        }
+      let itemStolen: Item | null = null
+      if (target.items.size > 0) {
+        itemStolen = pickRandomIn(values(target.items))
+        target.removeItem(itemStolen)
       }
 
       const clone = pokemon.simulation.addPokemon(
         p,
-        farthestCoordinate.x,
-        farthestCoordinate.y,
+        spawnPosition.x,
+        spawnPosition.y,
         pokemon.team
       )
       clone.hp = min(1)(Math.ceil(0.5 * pokemon.hp * (1 + pokemon.ap / 100)))
       clone.life = clone.hp
       clone.isClone = true
+      if (itemStolen) clone.addItem(itemStolen)
     }
   }
 }
@@ -2256,12 +2259,17 @@ export class NightmareStrategy extends AbilityStrategy {
     crit: boolean
   ) {
     super.process(pokemon, state, board, target, crit)
-    const duration = [1500, 3000, 6000][pokemon.stars - 1] ?? 6000
+    const duration = [1500, 2500, 5000][pokemon.stars - 1] ?? 5000
     const damage = [40, 80, 150][pokemon.stars - 1] ?? 100
 
     board.forEach((x: number, y: number, enemy: PokemonEntity | undefined) => {
       if (enemy && pokemon.team != enemy.team) {
-        if (enemy.status.flinch || enemy.status.sleep || enemy.status.silence) {
+        if (
+          enemy.status.curseFate ||
+          enemy.status.curseTorment ||
+          enemy.status.curseVulnerability ||
+          enemy.status.curseWeakness
+        ) {
           enemy.handleSpecialDamage(
             damage,
             board,
@@ -3633,18 +3641,6 @@ export class DragonBreathStrategy extends AbilityStrategy {
         )
       }
     })
-
-    target.handleSpecialDamage(damage, board, AttackType.TRUE, pokemon, crit)
-    const secondTarget = board.getValue(target.positionX, target.positionY + 1)
-    if (secondTarget && secondTarget != pokemon) {
-      secondTarget.handleSpecialDamage(
-        damage,
-        board,
-        AttackType.TRUE,
-        pokemon,
-        crit
-      )
-    }
   }
 }
 
@@ -4133,10 +4129,9 @@ export class ThiefStrategy extends AbilityStrategy {
 
     target.items.forEach((item) => {
       if (pokemon.items.size < 3) {
-        pokemon.items.add(item)
-        pokemon.simulation.applyItemEffect(pokemon, item)
+        pokemon.addItem(item)
       }
-      target.items.delete(item)
+      target.removeItem(item)
       if (item === Item.MAX_REVIVE && target.status.resurection) {
         target.status.resurection = false
       }
@@ -4158,7 +4153,7 @@ export class KnockOffStrategy extends AbilityStrategy {
     const damage = 90 + target.items.size * 30
 
     target.items.forEach((item) => {
-      target.items.delete(item)
+      target.removeItem(item)
       if (item === Item.MAX_REVIVE && target.status.resurection) {
         target.status.resurection = false
       }
@@ -5525,14 +5520,9 @@ export class FellStingerStrategy extends AbilityStrategy {
       crit
     )
     if (victim.death && !pokemon.isClone) {
-      pokemon.addAbilityPower(5, pokemon, 0, false)
-      pokemon.addAttack(1, pokemon, 0, false)
-      pokemon.addMaxHP(10, pokemon, 0, false)
-      if (!pokemon.isGhostOpponent) {
-        pokemon.refToBoardPokemon.atk += 1
-        pokemon.refToBoardPokemon.ap += 5
-        pokemon.refToBoardPokemon.hp += 10
-      }
+      pokemon.addAbilityPower(5, pokemon, 0, false, true)
+      pokemon.addAttack(1, pokemon, 0, false, true)
+      pokemon.addMaxHP(10, pokemon, 0, false, true)
     }
   }
 }
@@ -6158,7 +6148,7 @@ export class LavaPlumeStrategy extends AbilityStrategy {
     const damage = [20, 40, 80][pokemon.stars - 1] ?? 80
 
     cells.forEach((cell) => {
-      board.addBoardEffect(cell.x, cell.y, Effect.LAVA, pokemon.simulation)
+      board.addBoardEffect(cell.x, cell.y, Effect.EMBER, pokemon.simulation)
       if (cell.value && cell.value.team !== pokemon.team) {
         cell.value.handleSpecialDamage(
           damage,
@@ -9270,12 +9260,13 @@ export class PsyShockStrategy extends AbilityStrategy {
     crit: boolean
   ) {
     super.process(pokemon, state, board, target, crit, true)
-    const ppBurn = [20, 40, 80][pokemon.stars - 1] ?? 80
+    const ppBurn =
+      ([20, 40, 80][pokemon.stars - 1] ?? 80) * (1 + pokemon.ap / 100)
     const ppStolen = max(target.pp)(ppBurn)
     const extraPP = ppBurn - ppStolen
 
-    target.addPP(-ppStolen, pokemon, 1, crit)
-    pokemon.addShield(ppBurn, pokemon, 1, crit)
+    target.addPP(-ppStolen, pokemon, 0, crit)
+    pokemon.addShield(ppBurn, pokemon, 0, crit)
     if (extraPP > 0) {
       target.handleSpecialDamage(
         extraPP,
@@ -10446,9 +10437,9 @@ export class TrickOrTreatStrategy extends AbilityStrategy {
 
     if (target.items.size > 0) {
       const item = values(target.items)[0]!
-      target.items.delete(item)
+      target.removeItem(item)
       if (pokemon.items.size < 3) {
-        pokemon.items.add(item)
+        pokemon.addItem(item)
       }
     } else if (pokemon.ap <= 50) {
       // 0-50 AP: shrink unit size and HP
@@ -10851,6 +10842,86 @@ export class MetalClawStrategy extends AbilityStrategy {
   }
 }
 
+export class FirestarterStrategy extends AbilityStrategy {
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit, true)
+    const damage = [20, 40, 80][pokemon.stars - 1] ?? 80
+    const atkSpeedBuff = [10, 20, 40][pokemon.stars - 1] ?? 40
+
+    const farthestCoordinate =
+      board.getFarthestTargetCoordinateAvailablePlace(pokemon)
+    if (farthestCoordinate) {
+      const cells = board.getCellsBetween(
+        pokemon.positionX,
+        pokemon.positionY,
+        farthestCoordinate.x,
+        farthestCoordinate.y
+      )
+      cells.forEach((cell, i) => {
+        if (
+          cell.x === farthestCoordinate.x &&
+          cell.y === farthestCoordinate.y
+        ) {
+          pokemon.commands.push(
+            new DelayedCommand(() => {
+              pokemon.addAttackSpeed(atkSpeedBuff, pokemon, 1, crit)
+            }, 500)
+          )
+        } else {
+          pokemon.commands.push(
+            new DelayedCommand(() => {
+              board.addBoardEffect(
+                cell.x,
+                cell.y,
+                Effect.EMBER,
+                pokemon.simulation
+              )
+              pokemon.simulation.room.broadcast(Transfer.ABILITY, {
+                id: pokemon.simulation.id,
+                skill: Ability.FIRESTARTER,
+                positionX: pokemon.positionX,
+                positionY: pokemon.positionY,
+                targetX: cell.x,
+                targetY: cell.y
+              })
+
+              if (cell.value && cell.value.team != pokemon.team) {
+                cell.value.handleSpecialDamage(
+                  damage,
+                  board,
+                  AttackType.SPECIAL,
+                  pokemon,
+                  crit
+                )
+              }
+            }, i * 50)
+          )
+          pokemon.commands.push(
+            new DelayedCommand(
+              () => {
+                board.addBoardEffect(
+                  cell.x,
+                  cell.y,
+                  Effect.EMBER,
+                  pokemon.simulation
+                )
+              },
+              400 + i * 50
+            )
+          )
+        }
+      })
+      pokemon.moveTo(farthestCoordinate.x, farthestCoordinate.y, board)
+    }
+  }
+}
+
 export class NeverEndingNightmareStrategy extends AbilityStrategy {
   copyable = false
   process(
@@ -10964,6 +11035,7 @@ export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
   [Ability.NIGHTMARE]: new NightmareStrategy(),
   [Ability.CLANGOROUS_SOUL]: new ClangorousSoulStrategy(),
   [Ability.BONEMERANG]: new BonemerangStrategy(),
+  [Ability.SHADOW_BONE]: new ShadowBoneStrategy(),
   [Ability.GROWL]: new GrowlStrategy(),
   [Ability.RELIC_SONG]: new RelicSongStrategy(),
   [Ability.FAIRY_WIND]: new FairyWindStrategy(),
@@ -11345,6 +11417,7 @@ export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
   [Ability.POWER_HUG]: new PowerHugStrategy(),
   [Ability.MORTAL_SPIN]: new MortalSpinStrategy(),
   [Ability.METAL_CLAW]: new MetalClawStrategy(),
+  [Ability.FIRESTARTER]: new FirestarterStrategy(),
   [Ability.NEVER_ENDING_NIGHTMARE]: new NeverEndingNightmareStrategy(),
   [Ability.CHLOROPHYLL_HURRICANE]: new ChlorophyllHurricaneStrategy(),
   [Ability.GENESIS_SUPERNOVA]: new GenesisSupernovaStrategy()

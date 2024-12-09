@@ -2122,14 +2122,14 @@ export class Marowak extends Pokemon {
 export class AlolanMarowak extends Pokemon {
   types = new SetSchema<Synergy>([Synergy.GROUND, Synergy.FIRE, Synergy.GHOST])
   rarity = Rarity.EPIC
-  stars = 3
+  stars = 2
   hp = 250
-  atk = 26
-  def = 8
-  speDef = 6
+  atk = 20
+  def = 6
+  speDef = 5
   maxPP = 80
   range = 1
-  skill = Ability.BONEMERANG
+  skill = Ability.SHADOW_BONE
   regional = true
   attackSprite = AttackSprite.FIRE_MELEE
   isInRegion(map: DungeonPMDO, state?: GameState) {
@@ -5630,7 +5630,7 @@ export class Kecleon extends Pokemon {
   atk = 20
   def = 3
   speDef = 3
-  maxPP = 80
+  maxPP = 100
   range = 1
   skill = Ability.ILLUSION
   passive = Passive.PROTEAN2
@@ -6450,7 +6450,7 @@ export class HooH extends Pokemon {
   speDef = 3
   maxPP = 100
   range = 2
-  skill = Ability.FIRE_SPIN
+  skill = Ability.FIRE_BLAST
   passive = Passive.SUN
   attackSprite = AttackSprite.FIRE_RANGE
 }
@@ -10178,6 +10178,7 @@ export class UnownQuestion extends Pokemon {
   skill = Ability.HIDDEN_POWER_QM
   passive = Passive.UNOWN
   attackSprite = AttackSprite.PSYCHIC_RANGE
+  canHoldItems = false
 }
 
 export class UnownExclamation extends Pokemon {
@@ -10193,6 +10194,7 @@ export class UnownExclamation extends Pokemon {
   skill = Ability.HIDDEN_POWER_EM
   passive = Passive.UNOWN
   attackSprite = AttackSprite.PSYCHIC_RANGE
+  canHoldItems = false
 }
 
 export class Diglett extends Pokemon {
@@ -11129,8 +11131,7 @@ export class Tropius extends Pokemon {
   }) {
     const berry = pickRandomIn(Berries)
     if (entity.items.size < 3) {
-      entity.items.add(berry)
-      entity.refToBoardPokemon.items.add(berry)
+      entity.addItem(berry, true)
     } else {
       player.items.push(berry)
     }
@@ -13312,6 +13313,9 @@ export class Cosmoem extends Pokemon {
       else return Pkm.LUNALA
     }
   )
+  onAcquired(player: Player) {
+    this.hp = 200 // cancel hp buffs of cosmog
+  }
   hp = 200
   atk = 5
   def = 8
@@ -13340,6 +13344,7 @@ export class Solgaleo extends Pokemon {
   skill = Ability.SUNSTEEL_STRIKE
   attackSprite = AttackSprite.STEEL_MELEE
   onAcquired(player: Player) {
+    this.hp = 300 // cancel hp buffs of cosmoem
     player.titles.add(Title.STARGAZER)
   }
 }
@@ -13361,6 +13366,7 @@ export class Lunala extends Pokemon {
   skill = Ability.MOONGEIST_BEAM
   attackSprite = AttackSprite.STEEL_MELEE
   onAcquired(player: Player) {
+    this.hp = 300 // cancel hp buffs of cosmoem
     player.titles.add(Title.STARGAZER)
   }
 }
@@ -14830,14 +14836,13 @@ export class Skarmory extends Pokemon {
 
         const nbSpikes = 12
         const positions = new Set<string>()
-
         for (let i = 0; i < nbSpikes; i++) {
           let x, y
           do {
             x = Math.floor(Math.random() * board.columns)
             y =
               Math.floor((Math.random() * board.rows) / 2) +
-              (entity.positionY < 4 ? 4 : 0)
+              (entity.positionY < 3 ? 3 : 0)
           } while (positions.has(`${x},${y}`))
           positions.add(`${x},${y}`)
 
@@ -15381,6 +15386,81 @@ export class Glimmora extends Pokemon {
   additional = true
   attackSprite = AttackSprite.POISON_MELEE
   passive = Passive.GLIMMORA
+}
+
+export class Fletchling extends Pokemon {
+  types = new SetSchema<Synergy>([Synergy.FLYING, Synergy.FIRE])
+  rarity = Rarity.ULTRA
+  stars = 1
+  evolution = Pkm.FLETCHINDER
+  hp = 120
+  atk = 15
+  def = 3
+  speDef = 3
+  maxPP = 100
+  range = 2
+  skill = Ability.FIRESTARTER
+  attackSprite = AttackSprite.FIRE_RANGE
+}
+
+export class Fletchinder extends Pokemon {
+  types = new SetSchema<Synergy>([Synergy.FLYING, Synergy.FIRE])
+  rarity = Rarity.ULTRA
+  stars = 2
+  evolution = Pkm.TALONFLAME
+  hp = 230
+  atk = 30
+  def = 5
+  speDef = 5
+  maxPP = 100
+  range = 2
+  skill = Ability.FIRESTARTER
+  attackSprite = AttackSprite.FIRE_RANGE
+}
+
+export class Talonflame extends Pokemon {
+  types = new SetSchema<Synergy>([Synergy.FLYING, Synergy.FIRE])
+  rarity = Rarity.ULTRA
+  stars = 3
+  hp = 340
+  atk = 45
+  def = 7
+  speDef = 7
+  maxPP = 100
+  range = 2
+  skill = Ability.FIRESTARTER
+  attackSprite = AttackSprite.FIRE_RANGE
+}
+
+export class Vullaby extends Pokemon {
+  types = new SetSchema<Synergy>([Synergy.DARK, Synergy.FLYING])
+  rarity = Rarity.RARE
+  stars = 1
+  evolution = Pkm.MANDIBUZZ
+  hp = 90
+  atk = 11
+  def = 4
+  speDef = 2
+  maxPP = 80
+  range = 1
+  skill = Ability.FOUL_PLAY
+  additional = true
+  attackSprite = AttackSprite.DARK_MELEE
+}
+
+export class Mandibuzz extends Pokemon {
+  types = new SetSchema<Synergy>([Synergy.DARK, Synergy.FLYING])
+  rarity = Rarity.RARE
+  stars = 2
+  hp = 210
+  atk = 20
+  def = 6
+  speDef = 4
+  maxPP = 80
+  range = 1
+  skill = Ability.FOUL_PLAY
+  additional = true
+  attackSprite = AttackSprite.DARK_MELEE
 }
 
 export const PokemonClasses: Record<
@@ -16255,5 +16335,10 @@ export const PokemonClasses: Record<
   [Pkm.STUFFUL]: Stufful,
   [Pkm.BEWEAR]: Bewear,
   [Pkm.GLIMMET]: Glimmet,
-  [Pkm.GLIMMORA]: Glimmora
+  [Pkm.GLIMMORA]: Glimmora,
+  [Pkm.FLETCHLING]: Fletchling,
+  [Pkm.FLETCHINDER]: Fletchinder,
+  [Pkm.TALONFLAME]: Talonflame,
+  [Pkm.VULLABY]: Vullaby,
+  [Pkm.MANDIBUZZ]: Mandibuzz
 }

@@ -1,7 +1,7 @@
 import { MapSchema, Schema, SetSchema, type } from "@colyseus/schema"
 import Player from "../models/colyseus-models/player"
 import { Pokemon } from "../models/colyseus-models/pokemon"
-import { getWonderboxItems } from "./items"
+import { getWonderboxItems, ItemEffects } from "./items"
 import PokemonFactory from "../models/pokemon-factory"
 import { getPokemonData } from "../models/precomputed/precomputed-pokemon-data"
 import { PRECOMPUTED_POKEMONS_PER_TYPE } from "../models/precomputed/precomputed-types"
@@ -53,6 +53,7 @@ import { PokemonEntity, getStrongestUnit, getUnitScore } from "./pokemon-entity"
 import { DelayedCommand } from "./simulation-command"
 import { getAvatarString } from "../utils/avatar"
 import { max } from "../utils/number"
+import { OnItemGainedEffect } from "./effect"
 
 export default class Simulation extends Schema implements ISimulation {
   @type("string") weather: Weather = Weather.NEUTRAL
@@ -377,113 +378,9 @@ export default class Simulation extends Schema implements ISimulation {
       pokemon.zmove = Ability.DEFAULT
     }
 
-    if (item === Item.SOUL_DEW) {
-      pokemon.status.triggerSoulDew(1000)
-    }
-
-    if (item === Item.WIDE_LENS) {
-      pokemon.range += 2
-    }
-
-    if (item === Item.FAIRIUM_Z) {
-      pokemon.range += 1
-    }
-
-    if (item === Item.AMORPHIUM_Z) {
-      if (pokemon.player) {
-        pokemon.addAbilityPower(20 * pokemon.player?.synergies.countActiveSynergies(), pokemon, 0, false)
-      }
-    }
-
-    if (item === Item.SOUNDIUM_Z) {
-      pokemon.maxPP -= 15
-    }
-
-    if (item === Item.LIGHTIUM_Z) {
-      pokemon.maxPP -= 5
-    }
-
-    if (item === Item.DRAGONIUM_Z) {
-      pokemon.stars += 1
-    }
-
-    if (item === Item.POISONIUM_Z) {
-      pokemon.status.triggerPoison(60000, pokemon, undefined)
-    }
-
-    if (item === Item.AQUATINIUM_Z) {
-      pokemon.status.triggerRuneProtect(60000)
-    }
-
-    if (item === Item.STEELIUM_Z) {
-      pokemon.status.triggerLocked(20000, pokemon)
-    }
-
-    if (item === Item.MAX_REVIVE) {
-      pokemon.status.resurection = true
-    }
-
-    if (item === Item.SWIFT_WING) {
-      pokemon.addDodgeChance(0.1, pokemon, 0, false)
-    }
-
-    if (item === Item.FLAME_ORB) {
-      pokemon.addAttack(pokemon.baseAtk, pokemon, 0, false)
-      pokemon.status.triggerBurn(
-        60000,
-        pokemon as PokemonEntity,
-        pokemon as PokemonEntity
-      )
-    }
-
-    if (item === Item.TOXIC_ORB) {
-      pokemon.addAttack(pokemon.baseAtk, pokemon, 0, false)
-      pokemon.status.triggerPoison(
-        60000,
-        pokemon as PokemonEntity,
-        pokemon as PokemonEntity
-      )
-    }
-
-    if (item === Item.POKERUS_VIAL) {
-      pokemon.status.triggerPokerus()
-    }
-
-    if (item === Item.FLUFFY_TAIL) {
-      pokemon.status.triggerRuneProtect(60000)
-    }
-
-    if (item === Item.KINGS_ROCK) {
-      pokemon.addShield(0.3 * pokemon.hp, pokemon, 0, false)
-    }
-
-    if (item === Item.DYNAMAX_BAND) {
-      pokemon.addMaxHP(2.5 * pokemon.hp, pokemon, 0, false)
-    }
-
-    if (item === Item.TINY_MUSHROOM) {
-      pokemon.addMaxHP(-0.5 * pokemon.hp, pokemon, 0, false)
-    }
-
-    if (item === Item.GOLD_BOTTLE_CAP && pokemon.player) {
-      pokemon.addCritChance(pokemon.player.money, pokemon, 0, false)
-      pokemon.addCritPower(pokemon.player.money / 100, pokemon, 0, false)
-    }
-
-    if (item === Item.REPEAT_BALL && pokemon.player) {
-      pokemon.addAbilityPower(
-        Math.floor(
-          (pokemon.player.rerollCount + pokemon.simulation.stageLevel) / 2
-        ),
-        pokemon,
-        0,
-        false
-      )
-    }
-
-    if (item === Item.SACRED_ASH) {
-      pokemon.status.resurection = true
-    }
+    ItemEffects[item]
+      ?.filter((effect) => effect instanceof OnItemGainedEffect)
+      ?.forEach((effect) => effect.apply(pokemon))
   }
 
   applySynergyEffects(pokemon: PokemonEntity) {
@@ -1290,8 +1187,9 @@ export default class Simulation extends Schema implements ISimulation {
         case Effect.LINK_CABLE:
         case Effect.GOOGLE_SPECS:
           if (types.has(Synergy.ARTIFICIAL) && pokemon.items.size > 0) {
-            const nbItems =
-              max(3)(pokemon.items.size + (pokemon.items.has(Item.WONDER_BOX) ? 1 : 0))
+            const nbItems = max(3)(
+              pokemon.items.size + (pokemon.items.has(Item.WONDER_BOX) ? 1 : 0)
+            )
             const attackBoost = {
               [Effect.DUBIOUS_DISC]: 0,
               [Effect.LINK_CABLE]: (8 / 100) * pokemon.baseAtk,

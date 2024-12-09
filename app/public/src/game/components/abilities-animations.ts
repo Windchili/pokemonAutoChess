@@ -446,7 +446,7 @@ export function displayAbility(
       break
 
     case Ability.FIERY_WRATH:
-      addAbilitySprite(Ability.HEAT_WAVE, coordinates, true)
+      addAbilitySprite(Ability.FLAMETHROWER, coordinates, true)
         .setScale(2)
         .setTint(0xc000c0)
       break
@@ -1723,8 +1723,13 @@ export function displayAbility(
     }
 
     case Ability.BONEMERANG: {
-      const startCoords = transformAttackCoordinate(targetX, 0, flip)
-      const finalCoords = transformAttackCoordinate(targetX, 6, flip)
+      const startCoords = transformAttackCoordinate(positionX, positionY, flip)
+      const [dx, dy] = OrientationVector[orientation]
+      const finalCoords = transformAttackCoordinate(
+        positionX + dx * 5,
+        positionY + dy * 5,
+        flip
+      )
       const specialProjectile = addAbilitySprite(skill, startCoords).setScale(2)
       scene.tweens.add({
         targets: specialProjectile,
@@ -1732,6 +1737,33 @@ export function displayAbility(
         y: finalCoords[1],
         ease: "Power2",
         yoyo: true,
+        duration: 1000,
+        onComplete: () => {
+          specialProjectile.destroy()
+        }
+      })
+      break
+    }
+
+    case Ability.SHADOW_BONE: {
+      const startCoords = transformAttackCoordinate(positionX, positionY, flip)
+      const [dx, dy] = OrientationVector[orientation]
+      const finalCoords = transformAttackCoordinate(
+        positionX + dx * 5,
+        positionY + dy * 5,
+        flip
+      )
+      const specialProjectile = addAbilitySprite(
+        Ability.BONEMERANG,
+        startCoords
+      )
+        .setTint(0x301030)
+        .setScale(2)
+      scene.tweens.add({
+        targets: specialProjectile,
+        x: finalCoords[0],
+        y: finalCoords[1],
+        ease: "linear",
         duration: 1000,
         onComplete: () => {
           specialProjectile.destroy()
@@ -2839,6 +2871,26 @@ export function displayAbility(
     case Ability.METAL_CLAW:
       addAbilitySprite(skill, coordinatesTarget, true).setScale(2)
       break
+
+    case Ability.FIRESTARTER: {
+      const abilitySprite = addAbilitySprite(
+        skill,
+        [coordinatesTarget[0], coordinatesTarget[1] - 25],
+        true
+      ).setScale(2)
+      scene.tweens.add({
+        targets: abilitySprite,
+        x: coordinatesTarget[0],
+        y: coordinatesTarget[1] + 25,
+        ease: "linear",
+        duration: 800,
+        repeat: 1,
+        onComplete: () => {
+          abilitySprite.destroy()
+        }
+      })
+      break
+    }
 
     default:
       break
