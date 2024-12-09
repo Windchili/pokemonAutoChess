@@ -120,6 +120,7 @@ export enum Item {
   ELECTRIC_QUARTZ = "ELECTRIC_QUARTZ",
   BLOOD_STONE = "BLOOD_STONE",
   SMELLY_CLAY = "SMELLY_CLAY",
+  MOSSY_ROCK = "MOSSY_ROCK",
   FIRE_SHARD = "FIRE_SHARD",
   TEAL_MASK = "TEAL_MASK",
   WELLSPRING_MASK = "WELLSPRING_MASK",
@@ -310,7 +311,8 @@ export const WeatherRocks: Item[] = [
   Item.ELECTRIC_QUARTZ,
   Item.MIST_STONE,
   Item.BLOOD_STONE,
-  Item.SMELLY_CLAY
+  Item.SMELLY_CLAY,
+  Item.MOSSY_ROCK
 ]
 
 export const WeatherRocksByWeather: Map<
@@ -327,6 +329,7 @@ export const WeatherRocksByWeather: Map<
   [Weather.SMOG, Item.SMELLY_CLAY],
   [Weather.NIGHT, Item.BLACK_AUGURITE],
   [Weather.BLOODMOON, Item.BLOOD_STONE],
+  [Weather.LEAF_STORM, Item.MOSSY_ROCK],
   [Weather.NEUTRAL, null]
 ])
 

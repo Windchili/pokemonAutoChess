@@ -125,5 +125,52 @@ export const ItemEffects: { [i in Item]?: Effect[] } = {
     new OnItemGainedEffect((pokemon) => {
       pokemon.status.resurection = true
     })
+  ],
+  [Item.FAIRIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      pokemon.range += 1
+    })
+  ],
+  [Item.AMORPHIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      if (pokemon.player) {
+        pokemon.addAbilityPower(20 * pokemon.player?.synergies.countActiveSynergies(), pokemon, 0, false)
+      }
+    })
+  ],
+  [Item.SOUNDIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      pokemon.maxPP -= 15
+    })
+  ],
+  [Item.LIGHTIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      pokemon.maxPP -= 5
+    })
+  ],
+  [Item.DRAGONIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      pokemon.stars += 1
+    })
+  ],
+  [Item.POISONIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      pokemon.status.triggerPoison(60000, pokemon, undefined)
+    })
+  ],
+  [Item.AQUATINIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      pokemon.status.triggerRuneProtect(60000)
+    })
+  ],
+  [Item.STEELIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      pokemon.status.triggerLocked(8000, pokemon)
+    })
+  ],
+  [Item.GROUNDIUM_Z]: [
+    new OnItemGainedEffect((pokemon) => {
+      pokemon.addAttack(1, pokemon, 0, false, true)
+    })
   ]
 }

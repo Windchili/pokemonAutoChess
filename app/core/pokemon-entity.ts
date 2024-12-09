@@ -1710,16 +1710,25 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
 
     // Fieldium Z Buffs
     const _pokemon = this
+
+    const nbAlliesAlive = board.cells.filter(
+      (entity) => entity && entity.team === this.team
+    ).length
+    const meter = ["blueDpsMeter", "redDpsMeter"][this.team]
+    const nbFallenAllies =
+      this.simulation[meter].size - nbAlliesAlive
+
     this.simulation.room.clock.setTimeout(() => {
       board.forEach((x, y, value) => {
         if (
           value &&
           value.team == _pokemon.team &&
-          value.items.has(Item.FIELDIUM_Z)
+          value.items.has(Item.FIELDIUM_Z) &&
+          nbFallenAllies < 5
         ) {
           value.count.fieldCount++
           value.addShield(20, _pokemon, 0, false)
-          value.addAttack(3, _pokemon, 0, false)
+          value.addAttack(4, _pokemon, 0, false)
         }
       })
     }, 16)

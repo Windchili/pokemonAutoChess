@@ -392,7 +392,7 @@ export default class WeatherManager {
         speedX: { min: 700, max: 1000 },
         speedY: { min: -100, max: 100 },
         lifespan: 2000,
-        scale: 2
+        scale: 1.5
       }),
       this.scene.add.particles(0, 0, "wind", {
         ...leftScreenSource,
@@ -401,7 +401,7 @@ export default class WeatherManager {
         speedX: { min: 1400, max: 1800 },
         speedY: { min: -100, max: 100 },
         lifespan: 2000,
-        scale: 1
+        scale: 0.75
       }),
       this.scene.add.particles(0, 0, "leaf", {
         ...leftScreenSource,

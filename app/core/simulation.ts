@@ -537,6 +537,17 @@ export default class Simulation extends Schema implements ISimulation {
           this.addPokemon(floriumSpawn, coord.x, coord.y, teamIndex, true)
         }
 
+        if (pokemon.items.has(Item.GHOSTIUM_Z) && !isOnBench(pokemon)) {
+          if (player) {
+            const target = pickRandomIn(
+              this.board.cells.filter((v) => v && v.team !== player.team)
+            )
+            if (target) {
+              target.status.triggerPossessed(3000, target)
+            }
+          }
+        } 
+
         if (pokemon.items.has(Item.WHITE_FLUTE) && !isOnBench(pokemon)) {
           const wilds = PRECOMPUTED_POKEMONS_PER_TYPE[Synergy.WILD].map((p) =>
             getPokemonData(p)
@@ -697,6 +708,17 @@ export default class Simulation extends Schema implements ISimulation {
               if (value.def > pokemon.def) pokemon.def = value.def
               if (value.speDef > pokemon.speDef) pokemon.speDef = value.speDef
               if (value.ap > pokemon.ap) pokemon.ap = value.ap
+            }
+          })
+        }
+
+        if (pokemon.items.has(Item.ROCKIUM_Z)) {
+          const cells = 
+            this.board.getAdjacentCells(pokemon.positionX, pokemon.positionY)
+          
+          cells.forEach((cell) => {
+            if (cell.value && cell.value.team === pokemon.team) {
+              cell.value.addDefense(3, pokemon, 0, false)
             }
           })
         }

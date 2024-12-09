@@ -1160,6 +1160,8 @@ export default class Status extends Schema implements IStatus {
           pkm.team = Team.BLUE_TEAM
         }
 
+        pkm.toMovingState() // force retargetting
+
         if (duration > this.possessedCooldown) {
           this.possessedCooldown = Math.round(duration)
         }
@@ -1193,6 +1195,9 @@ export default class Status extends Schema implements IStatus {
       } else {
         pkm.team = Team.BLUE_TEAM
       }
+
+      pkm.toMovingState() // force retargeting
+      
     } else {
       this.possessedCooldown -= dt
     }
