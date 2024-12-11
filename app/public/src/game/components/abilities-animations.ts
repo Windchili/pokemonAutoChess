@@ -216,6 +216,14 @@ export function displayAbility(
       addAbilitySprite("CORE_ENFORCER/hit", coordinates, true).setScale(3)
       break
 
+    case Ability.SUPREME_OVERLORD_SLASH:
+      addAbilitySprite(skill, coordinates, true).setScale(4)
+      break
+  
+    case "SUPREME_OVERLORD_SLASH/hit":
+      addAbilitySprite("SUPREME_OVERLORD_SLASH/hit", coordinates, true).setScale(1.75)
+      break
+
     case Ability.LEECH_SEED:
       addAbilitySprite(skill, coordinatesTarget, true).setScale(2)
       break

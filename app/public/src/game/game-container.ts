@@ -214,7 +214,8 @@ class GameContainer {
       "defensiveRibbonCount",
       "attackOrderCount",
       "healOrderCount",
-      "magmarizerCount"
+      "magmarizerCount",
+      "zcrystalCount"
     ]
 
     fieldsCount.forEach((field) => {

@@ -417,7 +417,8 @@
     "FIRESTARTER": "Firestarter",
     "NEVER_ENDING_NIGHTMARE": "Never-Ending Nightmare",
     "CHLOROPHYLL_HURRICANE": "Chlorophyll Hurricane",
-    "GENESIS_SUPERNOVA": "Genesis Supernova"
+    "GENESIS_SUPERNOVA": "Genesis Supernova",
+    "SUPREME_OVERLORD_SLASH": "Supreme Overlord Slash"
   },
   "pkm": {
     "DEFAULT": "MissingNo.",
@@ -1688,7 +1689,8 @@
     "FIRESTARTER": "Gain [10,20,40,SP]% ATK_SPEED and flies to the furthest ennemy, dropping embers on the cells in between. The embers inflict [20,40,80,SP] SPECIAL and remain on the ground, so any Pokémon that steps on them BURN and take 10 SPECIAL per second if not FLYING or FIRE.",
     "NEVER_ENDING_NIGHTMARE": "[1,2,3] random enemies are POSSESSED by this Pokémon for [7,SP] seconds.",
     "CHLOROPHYLL_HURRICANE": "Deal [20,30,50,SP] SPECIAL to all enemies, and force the weather to LEAF_STORM. If the weather is already LEAF_STORM, deal an additional [10,30,50] SPECIAL.",
-    "GENESIS_SUPERNOVA": "Spawn [5,10,15] $t(pkm.SOLOSIS), which despawn after [5,SP=0.5] seconds."
+    "GENESIS_SUPERNOVA": "Spawn [5,10,15] $t(pkm.SOLOSIS), which despawn after [5,SP=0.5] seconds.",
+    "SUPREME_OVERLORD_SLASH": "Charge a devastating slash for [7,11,14] seconds, then release the attack, dealing [30,60,90,SP] TRUE to all enemies. A countdown is displayed next to the Z-Crystal."
   },
   "effect": {
     "INGRAIN": "Ingrain",

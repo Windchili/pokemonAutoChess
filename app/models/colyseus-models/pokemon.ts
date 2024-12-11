@@ -12806,7 +12806,7 @@ export class Cyclizar extends Pokemon {
 
 export class Pawniard extends Pokemon {
   types = new SetSchema<Synergy>([Synergy.DARK, Synergy.STEEL])
-  rarity = Rarity.ULTRA
+  rarity = Rarity.COMMON
   stars = 1
   evolution = Pkm.BISHARP
   hp = 130
@@ -12816,6 +12816,8 @@ export class Pawniard extends Pokemon {
   maxPP = 60
   range = 1
   skill = Ability.KOWTOW_CLEAVE
+  zmove = Ability.SUPREME_OVERLORD_SLASH
+  zmovePP = 40
   attackSprite = AttackSprite.STEEL_MELEE
 }
 
@@ -12831,6 +12833,8 @@ export class Bisharp extends Pokemon {
   maxPP = 60
   range = 1
   skill = Ability.KOWTOW_CLEAVE
+  zmove = Ability.SUPREME_OVERLORD_SLASH
+  zmovePP = 40
   attackSprite = AttackSprite.STEEL_MELEE
 }
 
@@ -12845,6 +12849,8 @@ export class Kingambit extends Pokemon {
   maxPP = 60
   range = 1
   skill = Ability.KOWTOW_CLEAVE
+  zmove = Ability.SUPREME_OVERLORD_SLASH
+  zmovePP = 40
   attackSprite = AttackSprite.STEEL_MELEE
 }
 

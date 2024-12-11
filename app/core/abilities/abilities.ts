@@ -40,7 +40,7 @@ import {
 } from "../../types/Config"
 import { Effect } from "../../types/enum/Effect"
 import { AttackType, Team } from "../../types/enum/Game"
-import { ArtificialItems, Berries, Item } from "../../types/enum/Item"
+import { ArtificialItems, Berries, Item, ZCrystals } from "../../types/enum/Item"
 import { Pkm, PkmIndex } from "../../types/enum/Pokemon"
 import { Synergy } from "../../types/enum/Synergy"
 import { Weather } from "../../types/enum/Weather"
@@ -11021,6 +11021,73 @@ export class GenesisSupernovaStrategy extends AbilityStrategy {
   }
 }
 
+export class SupremeOverlordSlashStrategy extends AbilityStrategy {
+  copyable = false
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+    const damage = [30, 60, 90][pokemon.stars - 1] ?? 90
+    const chargeTime = [7, 11, 14][pokemon.stars - 1] ?? 14
+
+    let zCrystal
+    pokemon.items.forEach((item) => {
+      if ((ZCrystals as readonly string[]).includes(item)) {
+        zCrystal = item
+      }
+    })
+
+    if (zCrystal) {
+      pokemon.count.zcrystalCount = chargeTime
+
+      for (let i = 1; i < chargeTime + 1; i++) {
+        
+        pokemon.commands.push(
+          new DelayedCommand(() => {
+            pokemon.count.zcrystalCount--
+          }, i * 1000)
+        )
+      }
+
+      pokemon.commands.push(
+        new DelayedCommand(() => {
+          pokemon.simulation.room.broadcast(Transfer.ABILITY, {
+            id: pokemon.simulation.id,
+            skill: Ability.SUPREME_OVERLORD_SLASH,
+            positionX: pokemon.positionX,
+            positionY: pokemon.positionY
+          })
+
+          board.forEach((x, y, unitOnCell) => {
+            if (unitOnCell && unitOnCell.team !== pokemon.team) {
+              unitOnCell.handleSpecialDamage(
+                damage, 
+                board, 
+                AttackType.TRUE, 
+                pokemon, 
+                crit
+              )
+              pokemon.simulation.room.broadcast(Transfer.ABILITY, {
+                id: pokemon.simulation.id,
+                skill: "SUPREME_OVERLORD_SLASH/hit",
+                positionX: unitOnCell.positionX,
+                positionY: unitOnCell.positionY
+              })
+            }
+          })
+          pokemon.count.zcrystalCount = 0
+        }, chargeTime * 1000)
+      )
+
+      
+    }
+  }
+}
+
 export * from "./hidden-power"
 
 export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
@@ -11420,5 +11487,6 @@ export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
   [Ability.FIRESTARTER]: new FirestarterStrategy(),
   [Ability.NEVER_ENDING_NIGHTMARE]: new NeverEndingNightmareStrategy(),
   [Ability.CHLOROPHYLL_HURRICANE]: new ChlorophyllHurricaneStrategy(),
-  [Ability.GENESIS_SUPERNOVA]: new GenesisSupernovaStrategy()
+  [Ability.GENESIS_SUPERNOVA]: new GenesisSupernovaStrategy(),
+  [Ability.SUPREME_OVERLORD_SLASH]: new SupremeOverlordSlashStrategy()
 }

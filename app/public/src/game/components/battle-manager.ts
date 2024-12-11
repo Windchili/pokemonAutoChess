@@ -18,9 +18,9 @@ import {
   PokemonActionState,
   Stat
 } from "../../../../types/enum/Game"
-import { Item } from "../../../../types/enum/Item"
+import { Item, ZCrystals } from "../../../../types/enum/Item"
 import { Passive } from "../../../../types/enum/Passive"
-import { AnimationConfig, Pkm } from "../../../../types/enum/Pokemon"
+import { AnimationConfig, Pkm, PkmFamily } from "../../../../types/enum/Pokemon"
 import { max } from "../../../../utils/number"
 import { transformAttackCoordinate } from "../../pages/utils/utils"
 import AnimationManager from "../animation-manager"
@@ -595,6 +595,17 @@ export default class BattleManager {
         pkm.itemsContainer.updateCount(Item.DEFENSIVE_RIBBON, value)
       } else if (field == "magmarizerCount") {
         pkm.itemsContainer.updateCount(Item.MAGMARIZER, value)
+      } else if (
+        field == "zcrystalCount" &&
+        PkmFamily[pkm.name] === Pkm.PAWNIARD
+      ) {
+        let zcrystal
+        pkm.items.forEach((item) => {
+          if ((ZCrystals as readonly string[]).includes(item)) {
+            zcrystal = item
+          }
+        })
+        pkm.itemsContainer.updateCount(zcrystal, value)
       }
     }
   }
