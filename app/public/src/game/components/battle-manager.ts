@@ -230,6 +230,8 @@ export default class BattleManager {
         } else {
           pkm.removeParalysis()
         }
+      } else if (field === "vibrating") {
+        pkm.vibrate()
       } else if (field === "pokerus") {
         if (pokemon.status.pokerus) {
           pkm.addPokerus()
@@ -334,8 +336,12 @@ export default class BattleManager {
         if (pokemon.status.enraged) {
           pkm.addRageEffect()
         }
+      } else if (field === "totemEmpower") {
+        if (pokemon.status.totemEmpower) {
+          pkm.addTotemEmpower()
+        }
       }
-    }
+    } 
   }
 
   changeCount(

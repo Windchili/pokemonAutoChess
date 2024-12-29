@@ -642,6 +642,7 @@ export interface IStatus {
   resurection: boolean
   resurecting: boolean
   paralysis: boolean
+  vibrating: boolean
   pokerus: boolean
   possessed: boolean
   locked: boolean
@@ -651,6 +652,7 @@ export interface IStatus {
   psychicField: boolean
   grassField: boolean
   fairyField: boolean
+  totemEmpower: boolean
 }
 
 export interface ICount {

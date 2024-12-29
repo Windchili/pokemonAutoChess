@@ -578,11 +578,15 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
       const update = (target: { atkSpeed: number }) => {
         const currentAtkSpeedBonus = 100 * (target.atkSpeed / 0.75 - 1)
         const atkSpeedBonus = currentAtkSpeedBonus + value
-        target.atkSpeed = clamp(
-          roundToNDigits(0.75 * (1 + atkSpeedBonus / 100), 2),
-          0.4,
-          2.5
-        )
+        if (this.status.allOutPummeling) {
+          target.atkSpeed = roundToNDigits(0.75 * (1 + atkSpeedBonus / 100), 2)
+        } else {
+          target.atkSpeed = clamp(
+            roundToNDigits(0.75 * (1 + atkSpeedBonus / 100), 2),
+            0.4,
+            2.5
+          )
+        }
       }
       update(this)
       if (permanent && !this.isGhostOpponent) {
@@ -915,6 +919,10 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
 
     if (this.name === Pkm.MORPEKO_HANGRY) {
       target.status.triggerWound(4000, target, this)
+    }
+
+    if (this.status.allOutPummeling) {
+      target.status.triggerLocked(1000, target)
     }
 
     if (this.passive === Passive.DREAM_CATCHER && target.status.sleep) {
@@ -1424,6 +1432,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
       this.passive = Passive.NONE
       this.addAttack(this.atk, this, 0, false)
       this.addAbilityPower(100, this, 0, false)
+      this.status.triggerTotemEmpower()
 
       for (let i = 0; i < 1; i++) {
         let name = PkmFamily[this.name]

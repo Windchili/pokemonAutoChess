@@ -2900,6 +2900,25 @@ export function displayAbility(
       break
     }
 
+    case "ETERNAL_ARIA/note":
+      const specialProjectile = addAbilitySprite(skill, coordinates)
+        .setScale(2)
+
+      const duration = Math.abs(targetX - positionX) * 400
+
+      scene.tweens.add({
+        targets: specialProjectile,
+        x: coordinatesTarget[0],
+        y: coordinatesTarget[1],
+        ease: "linear",
+        yoyo: false,
+        duration: duration,
+        onComplete: () => {
+          specialProjectile.destroy()
+        }
+      })
+      break
+
     default:
       break
   }

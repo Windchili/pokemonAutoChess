@@ -482,7 +482,7 @@ export class Thievul extends Pokemon {
 
 export class Swablu extends Pokemon {
   types = new SetSchema<Synergy>([Synergy.FAIRY, Synergy.SOUND])
-  rarity = Rarity.ULTRA
+  rarity = Rarity.COMMON
   stars = 1
   evolution = Pkm.ALTARIA
   hp = 120
@@ -492,6 +492,8 @@ export class Swablu extends Pokemon {
   maxPP = 100
   range = 2
   skill = Ability.HYPER_VOICE
+  zmove = Ability.ETERNAL_ARIA
+  zmovePP = 50
   attackSprite = AttackSprite.DRAGON_RANGE
 }
 
@@ -507,6 +509,8 @@ export class Altaria extends Pokemon {
   maxPP = 100
   range = 2
   skill = Ability.HYPER_VOICE
+  zmove = Ability.ETERNAL_ARIA
+  zmovePP = 50
   attackSprite = AttackSprite.DRAGON_RANGE
 }
 
@@ -521,6 +525,8 @@ export class MegaAltaria extends Pokemon {
   maxPP = 100
   range = 2
   skill = Ability.HYPER_VOICE
+  zmove = Ability.ETERNAL_ARIA
+  zmovePP = 50
   attackSprite = AttackSprite.DRAGON_RANGE
 }
 
@@ -624,7 +630,7 @@ export class Tsareena extends Pokemon {
 
 export class Buneary extends Pokemon {
   types = new SetSchema<Synergy>([Synergy.NORMAL, Synergy.FIGHTING])
-  rarity = Rarity.ULTRA
+  rarity = Rarity.COMMON
   stars = 1
   evolution = Pkm.LOPUNNY
   hp = 130
@@ -634,6 +640,8 @@ export class Buneary extends Pokemon {
   maxPP = 80
   range = 1
   skill = Ability.HIGH_JUMP_KICK
+  zmove = Ability.ALL_OUT_PUMMELING
+  zmovePP = 80
   attackSprite = AttackSprite.FIGHTING_MELEE
 }
 
@@ -649,6 +657,8 @@ export class Lopunny extends Pokemon {
   maxPP = 80
   range = 1
   skill = Ability.HIGH_JUMP_KICK
+  zmove = Ability.ALL_OUT_PUMMELING
+  zmovePP = 80
   attackSprite = AttackSprite.FIGHTING_MELEE
 }
 
@@ -663,6 +673,8 @@ export class MegaLopunny extends Pokemon {
   maxPP = 80
   range = 1
   skill = Ability.HIGH_JUMP_KICK
+  zmove = Ability.ALL_OUT_PUMMELING
+  zmovePP = 80
   attackSprite = AttackSprite.FIGHTING_MELEE
 }
 
@@ -1721,7 +1733,7 @@ export class Sewaddle extends Pokemon {
   maxPP = 100
   range = 1
   skill = Ability.MANTIS_BLADES
-  zmove = Ability.CHLOROPHYLL_HURRICANE
+  zmove = Ability.LEAF_STORM
   zmovePP = 60
   attackSprite = AttackSprite.BUG_MELEE
 }
@@ -1738,7 +1750,7 @@ export class Swadloon extends Pokemon {
   maxPP = 100
   range = 1
   skill = Ability.MANTIS_BLADES
-  zmove = Ability.CHLOROPHYLL_HURRICANE
+  zmove = Ability.LEAF_STORM
   zmovePP = 60
   attackSprite = AttackSprite.BUG_MELEE
 }
@@ -1754,7 +1766,7 @@ export class Leavanny extends Pokemon {
   maxPP = 100
   range = 1
   skill = Ability.MANTIS_BLADES
-  zmove = Ability.CHLOROPHYLL_HURRICANE
+  zmove = Ability.LEAF_STORM
   zmovePP = 60
   attackSprite = AttackSprite.BUG_MELEE
 }
@@ -12440,7 +12452,7 @@ export class Gholdengo extends Pokemon {
 
 export class Sobble extends Pokemon {
   types = new SetSchema<Synergy>([Synergy.WATER, Synergy.AQUATIC])
-  rarity = Rarity.ULTRA
+  rarity = Rarity.COMMON
   evolution = Pkm.DRIZZILE
   stars = 1
   hp = 120
@@ -12450,6 +12462,8 @@ export class Sobble extends Pokemon {
   maxPP = 80
   range = 3
   skill = Ability.SNIPE_SHOT
+  zmove = Ability.HYDRO_VORTEX
+  zmovePP = 40
   attackSprite = AttackSprite.WATER_RANGE
 }
 
@@ -12465,6 +12479,8 @@ export class Drizzile extends Pokemon {
   maxPP = 80
   range = 3
   skill = Ability.SNIPE_SHOT
+  zmove = Ability.HYDRO_VORTEX
+  zmovePP = 40
   attackSprite = AttackSprite.WATER_RANGE
 }
 
@@ -12479,6 +12495,8 @@ export class Inteleon extends Pokemon {
   maxPP = 80
   range = 3
   skill = Ability.SNIPE_SHOT
+  zmove = Ability.HYDRO_VORTEX
+  zmovePP = 40
   attackSprite = AttackSprite.WATER_RANGE
 }
 

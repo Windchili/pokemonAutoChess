@@ -27,6 +27,7 @@ export default class Status extends Schema implements IStatus {
   @type("boolean") resurection = false
   @type("boolean") resurecting = false
   @type("boolean") paralysis = false
+  @type("boolean") vibrating = false
   @type("boolean") pokerus = false
   @type("boolean") possessed = false
   @type("boolean") delayedKo = false
@@ -50,6 +51,7 @@ export default class Status extends Schema implements IStatus {
   @type("boolean") enraged = false
   @type("boolean") skydiving = false
   @type("boolean") tree = false
+  @type("boolean") totemEmpower = false
   magmaStorm = false
   soulDew = false
   clearWing = false
@@ -100,6 +102,8 @@ export default class Status extends Schema implements IStatus {
   stoneEdge = false
   stoneEdgeCooldown = 0
   bideCooldown = 0
+  allOutPummeling = false
+  allOutPummelingCooldown = 0
 
   clearNegativeStatus() {
     this.burnCooldown = 0
@@ -195,6 +199,10 @@ export default class Status extends Schema implements IStatus {
 
     if (this.darkHarvest) {
       this.updateDarkHarvest(dt, pokemon, board)
+    }
+
+    if (this.allOutPummeling) {
+      this.updateAllOutPummeling(dt, pokemon)
     }
 
     if (this.paralysis) {
@@ -499,6 +507,22 @@ export default class Status extends Schema implements IStatus {
       this.darkHarvest = false
     } else {
       this.darkHarvestCooldown -= dt
+    }
+  }
+
+  triggerAllOutPummeling(duration: number) {
+    this.allOutPummeling = true
+    if (duration > this.allOutPummelingCooldown) {
+      this.allOutPummelingCooldown = duration
+    }
+  }
+
+  updateAllOutPummeling(dt: number, pkm: PokemonEntity) {
+    if (this.allOutPummelingCooldown - dt <= 0) {
+      this.allOutPummeling = false
+      pkm.addAttackSpeed(0, pkm, 0, false)
+    } else {
+      this.allOutPummelingCooldown -= dt
     }
   }
 
@@ -959,6 +983,12 @@ export default class Status extends Schema implements IStatus {
     }
   }
 
+  triggerVibrating() {
+    if (!this.vibrating) {
+      this.vibrating
+    }
+  }
+
   healParalysis(pkm: PokemonEntity) {
     if (this.paralysis) {
       this.paralysis = false
@@ -1229,6 +1259,12 @@ export default class Status extends Schema implements IStatus {
         pokemon.baseRange + (pokemon.items.has(Item.WIDE_LENS) ? 2 : 0)
     } else {
       this.lockedCooldown -= dt
+    }
+  }
+
+  triggerTotemEmpower() {
+    if (!this.totemEmpower) {
+      this.totemEmpower = true
     }
   }
 

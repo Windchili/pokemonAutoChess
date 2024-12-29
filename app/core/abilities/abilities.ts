@@ -39,7 +39,7 @@ import {
   EvolutionTime
 } from "../../types/Config"
 import { Effect } from "../../types/enum/Effect"
-import { AttackType, Team } from "../../types/enum/Game"
+import { AttackType, Orientation, Team } from "../../types/enum/Game"
 import { ArtificialItems, Berries, Item, ZCrystals } from "../../types/enum/Item"
 import { Pkm, PkmIndex } from "../../types/enum/Pokemon"
 import { Synergy } from "../../types/enum/Synergy"
@@ -62,7 +62,7 @@ import { distanceC, distanceM } from "../../utils/distance"
 import { repeat } from "../../utils/function"
 import { logger } from "../../utils/logger"
 import { clamp, max, min } from "../../utils/number"
-import { OrientationArray, effectInLine } from "../../utils/orientation"
+import { OrientationArray, OrientationVector, effectInLine } from "../../utils/orientation"
 import {
   chance,
   pickNRandomIn,
@@ -3660,6 +3660,7 @@ export class IcicleCrashStrategy extends AbilityStrategy {
     if (pokemon.stars === 3) {
       damage = 80
     }
+    pokemon.status.triggerVibrating()
 
     board
       .getAdjacentCells(target.positionX, target.positionY, true)
@@ -10947,7 +10948,7 @@ export class NeverEndingNightmareStrategy extends AbilityStrategy {
   }
 }
 
-export class ChlorophyllHurricaneStrategy extends AbilityStrategy {
+export class LeafStormStrategy extends AbilityStrategy {
   copyable = false
   process(
     pokemon: PokemonEntity,
@@ -11081,10 +11082,199 @@ export class SupremeOverlordSlashStrategy extends AbilityStrategy {
           })
           pokemon.count.zcrystalCount = 0
         }, chargeTime * 1000)
-      )
-
-      
+      )   
     }
+  }
+}
+
+export class EternalAriaStrategy extends AbilityStrategy {
+  copyable = false
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+
+    const pp = [5, 10, 15][pokemon.stars - 1] ?? 15
+    const damage = [15, 20, 25][pokemon.stars - 1] ?? 25
+
+    let timePassed = 0
+
+    let orientation = Orientation.UPRIGHT
+    if (
+      pokemon.team === Team.RED_TEAM &&
+      pokemon.positionX === BOARD_WIDTH - 1 
+    ) {
+      orientation = Orientation.DOWNLEFT
+    } else if (pokemon.team === Team.RED_TEAM) {
+      orientation = Orientation.DOWNRIGHT
+    } else if (pokemon.positionX === BOARD_WIDTH - 1) {
+      orientation = Orientation.UPLEFT
+    }
+
+    let orientationVector = OrientationVector[orientation]
+
+    let startingPos = [pokemon.positionX, pokemon.positionY]
+    let currentPosX = startingPos[0]
+    let currentPosY = startingPos[1]
+
+    let reachedWall = false
+
+    const arrayPos = new Array()
+    const arrayEndPoints = new Array()
+    const times = new Array()
+    times.push(0)
+    
+    while(timePassed < 60000) {
+      startingPos = [currentPosX,currentPosY]
+      arrayEndPoints.push(startingPos)
+      while (!reachedWall) {
+        orientationVector = OrientationVector[orientation]
+
+        arrayPos.push([currentPosX,currentPosY])
+        currentPosX += orientationVector[0]
+        currentPosY += orientationVector[1]
+        if (
+          currentPosX <= 0 ||
+          currentPosX >= BOARD_WIDTH - 1 ||
+          currentPosY <= 0 ||
+          currentPosY >= BOARD_HEIGHT - 1
+        ) {
+          reachedWall = true
+        }
+      }
+
+      arrayEndPoints.push([currentPosX,currentPosY])
+      times.push((Math.abs(arrayEndPoints[arrayEndPoints.length - 1][0] - arrayEndPoints[arrayEndPoints.length - 2][0]) * 400) + times[times.length - 1])
+
+      reachedWall = false
+  
+      pokemon.commands.push(
+        new DelayedCommand(() => {
+          pokemon.simulation.room.broadcast(Transfer.ABILITY, {
+            id: pokemon.simulation.id,
+            skill: "ETERNAL_ARIA/note",
+            positionX: arrayEndPoints[0][0],
+            positionY: arrayEndPoints[0][1],
+            targetX: arrayEndPoints[1][0],
+            targetY: arrayEndPoints[1][1]
+          })
+
+          for (let i = 0; i < (Math.abs(arrayEndPoints[0][0] - arrayEndPoints[0][1]) + 1); i++) {
+            pokemon.commands.push(
+              new DelayedCommand(() => {
+                let target = board.getValue(arrayPos[0][0],arrayPos[0][1])
+                if (target) {
+                  logger.debug("intersected with : "+target.name)
+                  if (target.team === pokemon.team) {
+                    target.addPP(pp, pokemon, 1, crit)
+                  } else {
+                    target.handleSpecialDamage(damage, board, AttackType.SPECIAL, pokemon, crit)
+                  }
+                }
+                logger.debug("arrayPos1 : " + arrayPos[0][0]+","+arrayPos[0][1])
+                arrayPos.shift()
+            }, i * 400)
+            )
+            //logger.debug("arrayPos2 : " + arrayPos[i][0]+","+arrayPos[i][1])
+            
+          }
+
+          arrayEndPoints.shift()
+          arrayEndPoints.shift()
+
+          
+
+
+        }, times.shift() )
+      )
+      
+
+      if (
+        currentPosX <= 0 ||
+        currentPosX >= BOARD_WIDTH - 1
+      ) {
+        switch (orientation) {
+          case Orientation.UPRIGHT:
+            orientation = Orientation.UPLEFT
+            break
+          case Orientation.DOWNRIGHT:
+            orientation = Orientation.DOWNLEFT
+            break
+          case Orientation.UPLEFT:
+            orientation = Orientation.UPRIGHT
+            break
+          case Orientation.DOWNLEFT:
+            orientation = Orientation.DOWNRIGHT
+            break
+        }
+      }
+
+      if (
+        currentPosY <= 0 ||
+        currentPosY >= BOARD_HEIGHT - 1
+      ) {
+        switch (orientation) {
+          case Orientation.UPRIGHT:
+            orientation = Orientation.DOWNRIGHT
+            break
+          case Orientation.DOWNRIGHT:
+            orientation = Orientation.UPRIGHT
+            break
+          case Orientation.UPLEFT:
+            orientation = Orientation.DOWNLEFT
+            break
+          case Orientation.DOWNLEFT:
+            orientation = Orientation.UPLEFT
+            break
+        }
+      }
+      timePassed += Math.abs(arrayEndPoints[arrayEndPoints.length - 1][0] - arrayEndPoints[arrayEndPoints.length - 2][0]) * 400
+    }
+    //logger.debug("arrayPos: "+arrayPos[0][0]+", "+arrayPos[0])
+  }
+}
+
+export class AllOutPummelingStrategy extends AbilityStrategy {
+  copyable = false
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+    const duration = Math.round(7000 * (1 + pokemon.ap / 100))
+
+    const atkSpeedBuff = [75, 125, 250][pokemon.stars - 1] ?? 250
+    const critState = crit
+
+    pokemon.status.triggerAllOutPummeling(duration)
+    pokemon.addAttackSpeed(atkSpeedBuff, pokemon, 0, critState, false)
+    
+    pokemon.commands.push(
+      new DelayedCommand(() => {
+        pokemon.addAttackSpeed(-atkSpeedBuff, pokemon, 0, critState, false)
+      }, duration)
+    )   
+  }
+}
+
+export class HydroVortexStrategy extends AbilityStrategy {
+  copyable = false
+  process(
+    pokemon: PokemonEntity,
+    state: PokemonState,
+    board: Board,
+    target: PokemonEntity,
+    crit: boolean
+  ) {
+    super.process(pokemon, state, board, target, crit)
+    const damage = [30,60,90][pokemon.stars - 1] ?? 90
   }
 }
 
@@ -11486,7 +11676,10 @@ export const AbilityStrategies: { [key in Ability]: AbilityStrategy } = {
   [Ability.METAL_CLAW]: new MetalClawStrategy(),
   [Ability.FIRESTARTER]: new FirestarterStrategy(),
   [Ability.NEVER_ENDING_NIGHTMARE]: new NeverEndingNightmareStrategy(),
-  [Ability.CHLOROPHYLL_HURRICANE]: new ChlorophyllHurricaneStrategy(),
+  [Ability.LEAF_STORM]: new LeafStormStrategy(),
   [Ability.GENESIS_SUPERNOVA]: new GenesisSupernovaStrategy(),
-  [Ability.SUPREME_OVERLORD_SLASH]: new SupremeOverlordSlashStrategy()
+  [Ability.SUPREME_OVERLORD_SLASH]: new SupremeOverlordSlashStrategy(),
+  [Ability.ETERNAL_ARIA]: new EternalAriaStrategy(),
+  [Ability.ALL_OUT_PUMMELING]: new AllOutPummelingStrategy(),
+  [Ability.HYDRO_VORTEX]: new HydroVortexStrategy()
 }

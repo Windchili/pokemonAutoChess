@@ -98,9 +98,11 @@ export default class PokemonSprite extends DraggableObject {
   freeze: GameObjects.Sprite | undefined
   confusion: GameObjects.Sprite | undefined
   paralysis: GameObjects.Sprite | undefined
+  vibrating: GameObjects.Sprite | undefined
   pokerus: GameObjects.Sprite | undefined
   possessed: GameObjects.Sprite | undefined
   locked: GameObjects.Sprite | undefined
+  totemEmpower: GameObjects.Sprite | undefined
   armorReduction: GameObjects.Sprite | undefined
   charm: GameObjects.Sprite | undefined
   flinch: GameObjects.Sprite | undefined
@@ -730,7 +732,7 @@ export default class PokemonSprite extends DraggableObject {
         .sprite(0, -30, "status", "PARALYSIS/000.png")
         .setScale(2)
       this.paralysis.anims.play("PARALYSIS")
-      this.add(this.paralysis)
+      this.add(this.paralysis)      
     }
   }
 
@@ -739,6 +741,20 @@ export default class PokemonSprite extends DraggableObject {
       this.remove(this.paralysis, true)
       this.paralysis = undefined
     }
+  }
+
+  vibrate() {
+    
+    function xAdd(pokemon: { setX: Function, x: number }) {
+      pokemon.setX(pokemon.x + 200)
+    }
+    function xMinus(pokemon: { setX: Function, x: number }) {
+      pokemon.setX(pokemon.x - 200)
+    }
+    xAdd(this)
+    setTimeout(() => {
+      xMinus(this);  // Call xChange after 500ms
+    }, 500) 
   }
 
   addPokerus() {
@@ -792,6 +808,10 @@ export default class PokemonSprite extends DraggableObject {
       this.remove(this.locked, true)
       this.locked = undefined
     }
+  }
+
+  addTotemEmpower() {
+    this.sprite.setTint(0xffff00)
   }
 
   addArmorReduction() {

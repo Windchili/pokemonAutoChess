@@ -100,5 +100,12 @@ export class AttackCommand extends SimulationCommand {
         }
       }
     }
+
+    if (
+      //this.pokemon.status.hydroVortex &&
+      this.pokemon.count.attackCount % 5 === 0
+    ) {
+      // Send hydro vortex from user to target
+    }
   }
 }

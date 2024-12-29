@@ -22,7 +22,7 @@ export default class PokemonFactory {
       pokemon.positionY = y
       pokemons.set(pokemon.id, pokemon)
       if (totemEncounter) {
-        pokemon.hp *= 0.1
+        pokemon.hp *= 0.8
         pokemon.atk = 0
         pokemon.def = 0
         pokemon.passive = Passive.TOTEM
