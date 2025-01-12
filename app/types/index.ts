@@ -73,7 +73,7 @@ export enum Transfer {
   ADD_BOT = "ADD_BOT",
   REMOVE_BOT = "REMOVE_BOT",
   TOGGLE_READY = "TOGGLE_READY",
-  TOGGLE_NO_ELO = "TOGGLE_NO_ELO",
+  CHANGE_NO_ELO = "CHANGE_NO_ELO",
   REFRESH = "REFRESH",
   SPECTATE = "SPECTATE",
   LOCK = "LOCK",
@@ -408,6 +408,7 @@ export interface IPokemon {
   zmovePP: number
   passive: Passive
   items: SetSchema<Item>
+  tm: Ability | null
   shiny: boolean
   emotion: Emotion
   additional: boolean
@@ -560,14 +561,8 @@ export interface IPokemonEntity {
     apBoost: number,
     crit: boolean
   ): void
-  addItem(
-    item: Item,
-    permanent?: boolean
-  ): void
-  removeItem(
-    item: Item,
-    permenent?: boolean
-  ): void
+  addItem(item: Item, permanent?: boolean): void
+  removeItem(item: Item, permanent?: boolean): void
   update(
     dt: number,
     board: Board,
@@ -646,6 +641,7 @@ export interface IStatus {
   pokerus: boolean
   possessed: boolean
   locked: boolean
+  blinded: boolean
   armorReduction: boolean
   runeProtect: boolean
   electricField: boolean
@@ -680,6 +676,7 @@ export interface ICount {
   healOrderCount: number
   attackOrderCount: number
   magmarizerCount: number
+  echo: number
 }
 
 export interface IPreparationMetadata {

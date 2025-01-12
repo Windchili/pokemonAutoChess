@@ -10,7 +10,9 @@ import {
   SpecialItems,
   ShinyItems,
   WeatherRocks,
-  ZCrystals
+  ZCrystals,
+  TMs,
+  HMs
 } from "../../../../../types/enum/Item"
 import { Synergy } from "../../../../../types/enum/Synergy"
 import { ItemDetailTooltip } from "../../../game/components/item-detail"
@@ -178,6 +180,33 @@ export default function WikiItems() {
               onMouseOver={() => setItemHovered(i)}
             >
               <img src={"assets/item/" + i + ".png"} className="item"></img>
+            </li>
+          ))}
+        </ul>
+      </article>
+
+      <article className="tm-hm">
+        <h2>
+          <SynergyIcon type={Synergy.HUMAN} /> {t("tm_hm")}
+        </h2>
+        <p>{addIconsToDescription(t("tm_hm_description"))}</p>
+        <ul>
+          {TMs.map((i) => (
+            <li
+              key={i}
+              data-tooltip-id="detail-item"
+              onMouseOver={() => setItemHovered(i)}
+            >
+              <img src={"assets/item/TM.png"} className="item"></img>
+            </li>
+          ))}
+          {HMs.map((i) => (
+            <li
+              key={i}
+              data-tooltip-id="detail-item"
+              onMouseOver={() => setItemHovered(i)}
+            >
+              <img src={"assets/item/HM.png"} className="item"></img>
             </li>
           ))}
         </ul>

@@ -154,7 +154,7 @@ export default class LoadingManager {
         frameWidth: 64,
         frameHeight: 64,
         startFrame: 0,
-        endFrame: 17
+        endFrame: 23
       }
     })
 

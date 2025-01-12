@@ -22,6 +22,7 @@ import {
 } from "../models/precomputed/precomputed-pokemon-data"
 import { PRECOMPUTED_POKEMONS_PER_RARITY } from "../models/precomputed/precomputed-rarity"
 import { getAdditionalsTier1 } from "../models/shop"
+import { Passive } from "../types/enum/Passive"
 import { getAvatarString } from "../utils/avatar"
 import {
   Emotion,
@@ -584,7 +585,19 @@ export default class GameRoom extends Room<GameState> {
       if (client && client.auth && client.auth.displayName) {
         //logger.info(`${client.auth.displayName} left game`)
         const player = this.state.players.get(client.auth.uid)
-        if (player && this.state.stageLevel <= 5) {
+        const hasLeftGameBeforeTheEnd =
+          player && player.life > 0 && !this.state.gameFinished
+        if (hasLeftGameBeforeTheEnd) {
+          /* if a user leaves a game before the end, 
+          they cannot join another in the next 5 minutes */
+          this.presence.hset(
+            client.auth.uid,
+            "user_timeout",
+            new Date(Date.now() + 1000 * 60 * 5).toISOString()
+          )
+        }
+
+        if (player && this.state.stageLevel <= 5 && !consented) {
           /* 
           if player left game during the loading screen or before stage 6,
           we consider they didn't play the game and presume a technical issue
@@ -594,6 +607,7 @@ export default class GameRoom extends Room<GameState> {
           this.setMetadata({
             playerIds: removeInArray(this.metadata.playerIds, client.auth.uid)
           })
+
           /*logger.info(
             `${client.auth.displayName} has been removed from players list`
           )*/
@@ -992,7 +1006,7 @@ export default class GameRoom extends Room<GameState> {
     let size = 0
 
     board.forEach((pokemon, key) => {
-      if (pokemon.positionY != 0) {
+      if (pokemon.positionY != 0 && pokemon.doesCountForTeamSize) {
         size++
       }
     })
@@ -1091,7 +1105,7 @@ export default class GameRoom extends Room<GameState> {
     let damage = Math.ceil(stageLevel / 2)
     if (opponentTeam.size > 0) {
       opponentTeam.forEach((pokemon) => {
-        if (!pokemon.isClone) {
+        if (!pokemon.isClone && pokemon.passive !== Passive.INANIMATE) {
           damage += 1
         }
       })

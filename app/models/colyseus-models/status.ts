@@ -32,6 +32,7 @@ export default class Status extends Schema implements IStatus {
   @type("boolean") possessed = false
   @type("boolean") delayedKo = false
   @type("boolean") locked = false
+  @type("boolean") blinded = false
   @type("boolean") armorReduction = false
   @type("boolean") runeProtect = false
   @type("boolean") charm = false
@@ -81,6 +82,7 @@ export default class Status extends Schema implements IStatus {
   runeProtectCooldown = 0
   charmCooldown = 0
   flinchCooldown = 0
+  enrageCooldown = 0
   spikeArmorCooldown = 0
   magicBounceCooldown = 0
   synchroCooldown = 3000
@@ -94,6 +96,7 @@ export default class Status extends Schema implements IStatus {
   pokerusCooldown = 2000
   possessedCooldown = 0
   lockedCooldown = 0
+  blindCooldown = 0
   delayedKoCooldown = 0
   enrageDelay = 35000
   darkHarvest = false
@@ -122,6 +125,8 @@ export default class Status extends Schema implements IStatus {
     this.curseCooldown = 0
     this.curse = false
     this.lockedCooldown = 0
+    this.enrageCooldown = 0
+    this.blindCooldown = 0
   }
 
   hasNegativeStatus() {
@@ -140,6 +145,7 @@ export default class Status extends Schema implements IStatus {
       this.armorReduction ||
       this.curse ||
       this.locked ||
+      this.blinded ||
       this.possessed
     )
   }
@@ -147,6 +153,10 @@ export default class Status extends Schema implements IStatus {
   updateAllStatus(dt: number, pokemon: PokemonEntity, board: Board) {
     if (pokemon.effects.has(Effect.POISON_GAS) && this.poisonStacks === 0) {
       this.triggerPoison(1500, pokemon, undefined)
+    }
+
+    if (pokemon.effects.has(Effect.SMOKE) && !this.blinded) {
+      this.triggerBlinded(1000, pokemon)
     }
 
     if (pokemon.effects.has(Effect.STICKY_WEB) && !this.paralysis) {
@@ -211,6 +221,10 @@ export default class Status extends Schema implements IStatus {
 
     if (this.locked) {
       this.updateLocked(dt, pokemon)
+    }
+
+    if (this.blinded) {
+      this.updateBlinded(dt)
     }
 
     if (this.pokerus) {
@@ -351,14 +365,33 @@ export default class Status extends Schema implements IStatus {
     }
   }
 
+  triggerRage(duration: number, pokemon: PokemonEntity) {
+    this.enraged = true
+    this.protect = false
+    duration = this.applyAquaticReduction(duration, pokemon)
+    this.enrageCooldown = Math.round(duration)
+    pokemon.addAttackSpeed(100, pokemon, 0, false)
+  }
+
   updateRage(dt: number, pokemon: PokemonEntity) {
-    if (this.enrageDelay - dt <= 0 && !pokemon.simulation.finished) {
+    if (
+      !this.enraged &&
+      this.enrageDelay - dt <= 0 &&
+      !pokemon.simulation.finished
+    ) {
       this.enraged = true
       this.protect = false
       pokemon.addAttackSpeed(100, pokemon, 0, false)
-    } else {
-      this.enrageDelay -= dt
+    } else if (
+      this.enraged &&
+      this.enrageCooldown - dt <= 0 &&
+      this.enrageDelay - dt > 0
+    ) {
+      this.enraged = false
+      pokemon.addAttackSpeed(-100, pokemon, 0, false)
     }
+
+    this.enrageDelay -= dt
   }
 
   triggerClearWing(timer: number) {
@@ -1063,6 +1096,11 @@ export default class Status extends Schema implements IStatus {
     }
   }
 
+  addResurrection(pokemon: PokemonEntity) {
+    if (pokemon.passive === Passive.INANIMATE) return // Inanimate objects cannot be resurrected
+    this.resurection = true
+  }
+
   triggerResurection(pokemon: PokemonEntity) {
     this.resurection = false
     this.resurecting = true
@@ -1138,7 +1176,8 @@ export default class Status extends Schema implements IStatus {
     }
   }
 
-  triggerPokerus() {
+  triggerPokerus(pokemon: PokemonEntity) {
+    if ((pokemon.passive = Passive.INANIMATE)) return // Inanimate objects cannot get Pokerus
     if (!this.pokerus) {
       this.pokerus = true
     }
@@ -1160,7 +1199,7 @@ export default class Status extends Schema implements IStatus {
             cell.value.team === pokemon.team &&
             cell.value.status.pokerus === false
           ) {
-            cell.value.status.triggerPokerus()
+            cell.value.status.triggerPokerus(cell.value)
             infectCount++
           }
         }
@@ -1265,6 +1304,27 @@ export default class Status extends Schema implements IStatus {
   triggerTotemEmpower() {
     if (!this.totemEmpower) {
       this.totemEmpower = true
+    }
+  }
+
+  triggerBlinded(duration: number, pkm: PokemonEntity) {
+    if (!this.blinded && !this.runeProtect) {
+      if (pkm.status.enraged) {
+        duration = duration / 2
+      }
+
+      duration = this.applyAquaticReduction(duration, pkm)
+
+      this.blinded = true
+      this.blindCooldown = Math.round(duration)
+    }
+  }
+
+  updateBlinded(dt: number) {
+    if (this.blindCooldown - dt <= 0) {
+      this.blinded = false
+    } else {
+      this.blindCooldown -= dt
     }
   }
 

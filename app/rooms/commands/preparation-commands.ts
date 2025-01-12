@@ -22,17 +22,30 @@ import PreparationRoom from "../preparation-room"
 import { CloseCodes } from "../../types/enum/CloseCodes"
 import { getRank } from "../../utils/elo"
 import { SpecialGameRule } from "../../types/enum/SpecialGameRule"
+import { UserRecord } from "firebase-admin/lib/auth/user-record"
 
 export class OnJoinCommand extends Command<
   PreparationRoom,
   {
-    client: Client
+    client: Client<undefined, UserRecord>
     options: any
-    auth: any
+    auth: UserRecord
   }
 > {
   async execute({ client, options, auth }) {
     try {
+      const timeoutDateStr = await this.room.presence.hget(
+        client.auth.uid,
+        "user_timeout"
+      )
+      if (timeoutDateStr) {
+        const timeout = new Date(timeoutDateStr).getTime()
+        if (timeout > Date.now()) {
+          client.leave(CloseCodes.USER_TIMEOUT)
+          return
+        }
+      }
+
       const numberOfHumanPlayers = values(this.state.users).filter(
         (u) => !u.isBot
       ).length
@@ -403,6 +416,10 @@ export class OnRoomChangeSpecialRule extends Command<
     try {
       if (client.auth?.uid == this.state.ownerId) {
         this.state.specialGameRule = specialRule
+        if (specialRule != null) {
+          this.state.noElo = true
+          this.room.setNoElo(true)
+        }
         const leader = this.state.users.get(client.auth.uid)
         this.room.state.addMessage({
           author: "Server",
@@ -423,7 +440,7 @@ export class OnRoomChangeSpecialRule extends Command<
   }
 }
 
-export class OnToggleEloCommand extends Command<
+export class OnChangeNoEloCommand extends Command<
   PreparationRoom,
   {
     client: Client
@@ -437,7 +454,10 @@ export class OnToggleEloCommand extends Command<
         this.state.noElo != noElo
       ) {
         this.state.noElo = noElo
-        this.room.toggleElo(noElo)
+        if (noElo === false) {
+          this.room.state.specialGameRule = null
+        }
+        this.room.setNoElo(noElo)
         const leader = this.state.users.get(client.auth.uid)
         this.room.state.addMessage({
           author: "Server",

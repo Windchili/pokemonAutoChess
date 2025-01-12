@@ -1,4 +1,5 @@
 import { reverseMap } from "../../utils/map"
+import { Ability } from "./Ability"
 import { Synergy } from "./Synergy"
 import { Weather } from "./Weather"
 
@@ -156,7 +157,23 @@ export enum Item {
   LIGHTIUM_Z = "LIGHTIUM_Z",
   WILDIUM_Z = "WILDIUM_Z",
   BABIUM_Z = "BABIUM_Z",
-  AMORPHIUM_Z = "AMORPHIUM_Z"
+  AMORPHIUM_Z = "AMORPHIUM_Z",
+  TM_RAGE = "TM_RAGE",
+  TM_BRICK_BREAK = "TM_BRICK_BREAK",
+  TM_TAUNT = "TM_TAUNT",
+  TM_BULK_UP = "TM_BULK_UP",
+  TM_BIDE = "TM_BIDE",
+  TM_PSYCH_UP = "TM_PSYCH_UP",
+  TM_RETALIATE = "TM_RETALIATE",
+  TM_PAYDAY = "TM_PAYDAY",
+  HM_CUT = "HM_CUT",
+  HM_FLY = "HM_FLY",
+  HM_SURF = "HM_SURF",
+  HM_STRENGTH = "HM_STRENGTH",
+  HM_FLASH = "HM_FLASH",
+  HM_ROCK_SMASH = "HM_ROCK_SMASH",
+  HM_WHIRLPOOL = "HM_WHIRLPOOL",
+  HM_WATERFALL = "HM_WATERFALL"
 }
 
 export const AllItems: Item[] = Object.values(Item)
@@ -175,7 +192,7 @@ export const SpecialItems: Item[] = [
   Item.OLD_ROD,
   Item.GOOD_ROD,
   Item.SUPER_ROD,
-  Item.TRASH,
+  Item.TRASH
 ]
 
 export const FishingRods = [
@@ -425,6 +442,47 @@ export const OgerponMasks: Item[] = [
   Item.CORNERSTONE_MASK,
   Item.HEARTHFLAME_MASK
 ]
+
+export const TMs = [
+  Item.TM_RAGE,
+  Item.TM_BRICK_BREAK,
+  Item.TM_TAUNT,
+  Item.TM_BULK_UP,
+  Item.TM_BIDE,
+  Item.TM_PSYCH_UP,
+  Item.TM_RETALIATE,
+  Item.TM_PAYDAY
+]
+
+export const HMs = [
+  Item.HM_CUT,
+  Item.HM_FLY,
+  Item.HM_SURF,
+  Item.HM_STRENGTH,
+  Item.HM_FLASH,
+  Item.HM_ROCK_SMASH,
+  Item.HM_WATERFALL,
+  Item.HM_WHIRLPOOL
+]
+
+export const AbilityPerTM: { [item in Item]?: Ability } = {
+  [Item.TM_RAGE]: Ability.RAGE,
+  [Item.TM_BRICK_BREAK]: Ability.BRICK_BREAK,
+  [Item.TM_TAUNT]: Ability.TAUNT,
+  [Item.TM_BULK_UP]: Ability.BULK_UP,
+  [Item.TM_BIDE]: Ability.BIDE,
+  [Item.TM_PSYCH_UP]: Ability.PSYCH_UP,
+  [Item.TM_RETALIATE]: Ability.RETALIATE,
+  [Item.TM_PAYDAY]: Ability.PAYDAY,
+  [Item.HM_CUT]: Ability.CUT,
+  [Item.HM_FLY]: Ability.FLY,
+  [Item.HM_SURF]: Ability.SURF,
+  [Item.HM_STRENGTH]: Ability.STRENGTH,
+  [Item.HM_FLASH]: Ability.FLASH,
+  [Item.HM_ROCK_SMASH]: Ability.ROCK_SMASH,
+  [Item.HM_WATERFALL]: Ability.WATERFALL,
+  [Item.HM_WHIRLPOOL]: Ability.WHIRLPOOL
+}
 
 export const ZCrystals = [
   Item.NORMALIUM_Z,

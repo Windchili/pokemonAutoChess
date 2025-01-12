@@ -134,6 +134,7 @@ export enum Pkm {
   COMBEE = "COMBEE",
   COMBUSKEN = "COMBUSKEN",
   COMFEY = "COMFEY",
+  CONKELDURR = "CONKELDURR",
   CORPHISH = "CORPHISH",
   CORSOLA = "CORSOLA",
   CORVIKNIGHT = "CORVIKNIGHT",
@@ -298,6 +299,7 @@ export enum Pkm {
   GROWLITHE = "GROWLITHE",
   GRUBBIN = "GRUBBIN",
   GRUMPIG = "GRUMPIG",
+  GURDURR = "GURDURR",
   GUZZLORD = "GUZZLORD",
   GYARADOS = "GYARADOS",
   HAKAMO_O = "HAKAMO_O",
@@ -318,10 +320,12 @@ export enum Pkm {
   HIPPODOWN = "HIPPODOWN",
   HIPPOPOTAS = "HIPPOPOTAS",
   HISUI_ARCANINE = "HISUI_ARCANINE",
+  HISUI_ELECTRODE = "HISUI_ELECTRODE",
   HISUI_GOODRA = "HISUI_GOODRA",
   HISUI_GROWLITHE = "HISUI_GROWLITHE",
   HISUI_SLIGGOO = "HISUI_SLIGGOO",
   HISUI_SNEASEL = "HISUI_SNEASEL",
+  HISUI_VOLTORB = "HISUI_VOLTORB",
   HISUI_ZOROARK = "HISUI_ZOROARK",
   HISUI_ZORUA = "HISUI_ZORUA",
   HISUIAN_QWILFISH = "HISUIAN_QWILFISH",
@@ -556,6 +560,9 @@ export enum Pkm {
   PIGNITE = "PIGNITE",
   PIKACHU = "PIKACHU",
   //PIKIPEK = "PIKIPEK",
+  PILLAR_WOOD = "PILLAR_WOOD",
+  PILLAR_IRON = "PILLAR_IRON",
+  PILLAR_CONCRETE = "PILLAR_CONCRETE",
   PILOSWINE = "PILOSWINE",
   PINECO = "PINECO",
   PINSIR = "PINSIR",
@@ -741,6 +748,7 @@ export enum Pkm {
   TERRAKION = "TERRAKION",
   THIEVUL = "THIEVUL",
   THUNDURUS = "THUNDURUS",
+  TIMBURR = "TIMBURR",
   TINKATINK = "TINKATINK",
   TINKATON = "TINKATON",
   TINKATUFF = "TINKATUFF",
@@ -871,7 +879,9 @@ export enum Pkm {
   ZYGARDE_50 = "ZYGARDE_50",
   ZYGARDE_100 = "ZYGARDE_100",
   VULLABY = "VULLABY",
-  MANDIBUZZ = "MANDIBUZZ"
+  MANDIBUZZ = "MANDIBUZZ",
+  INKAY = "INKAY",
+  MALAMAR = "MALAMAR"
 }
 
 export const PkmIndex: { [key in Pkm]: string } = {
@@ -999,7 +1009,9 @@ export const PkmIndex: { [key in Pkm]: string } = {
   [Pkm.KRABBY]: "0098",
   [Pkm.KINGLER]: "0099",
   [Pkm.VOLTORB]: "0100",
+  [Pkm.HISUI_VOLTORB]: "0100-0001",
   [Pkm.ELECTRODE]: "0101",
+  [Pkm.HISUI_ELECTRODE]: "0101-0001",
   [Pkm.EXEGGCUTE]: "0102",
   [Pkm.EXEGGUTOR]: "0103",
   [Pkm.ALOLAN_EXEGGUTOR]: "0103-0001",
@@ -1506,9 +1518,12 @@ export const PkmIndex: { [key in Pkm]: string } = {
   //[Pkm.DRILBUR]: "0529",
   //[Pkm.EXCADRILL]: "0530",
   [Pkm.AUDINO]: "0531",
-  //[Pkm.TIMBURR]: "0532",
-  //[Pkm.GURDURR]: "0533",
-  //[Pkm.CONKELDURR]: "0534",
+  [Pkm.TIMBURR]: "0532",
+  [Pkm.PILLAR_WOOD]: "0532-0002",
+  [Pkm.GURDURR]: "0533",
+  [Pkm.PILLAR_IRON]: "0533-0002",
+  [Pkm.CONKELDURR]: "0534",
+  [Pkm.PILLAR_CONCRETE]: "0534-0002",
   [Pkm.TYMPOLE]: "0535",
   [Pkm.PALPITOAD]: "0536",
   [Pkm.SEISMITOAD]: "0537",
@@ -1667,8 +1682,8 @@ export const PkmIndex: { [key in Pkm]: string } = {
   //[Pkm.AROMATISSE]: "0683",
   //[Pkm.SWIRLIX]: "0684",
   //[Pkm.SLURPUFF]: "0685",
-  //[Pkm.INKAY]: "0686",
-  //[Pkm.MALAMAR]: "0687",
+  [Pkm.INKAY]: "0686",
+  [Pkm.MALAMAR]: "0687",
   [Pkm.BINACLE]: "0688",
   [Pkm.BARBARACLE]: "0689",
   //[Pkm.SKRELP]: "0690",
@@ -2441,7 +2456,9 @@ export const PkmFamily: { [key in Pkm]: Pkm } = {
   [Pkm.VENONAT]: Pkm.VENONAT,
   [Pkm.VENOMOTH]: Pkm.VENONAT,
   [Pkm.VOLTORB]: Pkm.VOLTORB,
+  [Pkm.HISUI_VOLTORB]: Pkm.HISUI_VOLTORB,
   [Pkm.ELECTRODE]: Pkm.VOLTORB,
+  [Pkm.HISUI_ELECTRODE]: Pkm.HISUI_VOLTORB,
   [Pkm.SLUGMA]: Pkm.SLUGMA,
   [Pkm.MAGCARGO]: Pkm.SLUGMA,
   [Pkm.SNEASEL]: Pkm.SNEASEL,
@@ -2898,7 +2915,15 @@ export const PkmFamily: { [key in Pkm]: Pkm } = {
   [Pkm.FLETCHINDER]: Pkm.FLETCHLING,
   [Pkm.TALONFLAME]: Pkm.FLETCHLING,
   [Pkm.VULLABY]: Pkm.VULLABY,
-  [Pkm.MANDIBUZZ]: Pkm.VULLABY
+  [Pkm.MANDIBUZZ]: Pkm.VULLABY,
+  [Pkm.INKAY]: Pkm.INKAY,
+  [Pkm.MALAMAR]: Pkm.INKAY,
+  [Pkm.TIMBURR]: Pkm.TIMBURR,
+  [Pkm.GURDURR]: Pkm.TIMBURR,
+  [Pkm.CONKELDURR]: Pkm.TIMBURR,
+  [Pkm.PILLAR_WOOD]: Pkm.PILLAR_WOOD,
+  [Pkm.PILLAR_IRON]: Pkm.PILLAR_IRON,
+  [Pkm.PILLAR_CONCRETE]: Pkm.PILLAR_CONCRETE
 }
 
 export const PkmRegionalVariants: { [key in Pkm]?: readonly Pkm[] } = {
@@ -2912,7 +2937,8 @@ export const PkmRegionalVariants: { [key in Pkm]?: readonly Pkm[] } = {
   [Pkm.NIDORANF]: [Pkm.NIDORANM],
   [Pkm.SNEASEL]: [Pkm.HISUI_SNEASEL],
   [Pkm.MEOWTH]: [Pkm.ALOLAN_MEOWTH],
-  [Pkm.PONYTA]: [Pkm.GALARIAN_PONYTA]
+  [Pkm.PONYTA]: [Pkm.GALARIAN_PONYTA],
+  [Pkm.VOLTORB]: [Pkm.HISUI_VOLTORB]
 } as const
 
 export enum PkmDuo {
@@ -3039,6 +3065,7 @@ export const AnimationConfig: {
     ability: AnimationType
     emote: AnimationType
     shinyUnavailable?: boolean
+    noShadow?: boolean
   }
 } = {
   [Pkm.DEFAULT]: {
@@ -4241,14 +4268,14 @@ export const AnimationConfig: {
     emote: AnimationType.Shoot
   },
   [Pkm.TERRAKION]: {
-    attack: AnimationType.Attack,
+    attack: AnimationType.Strike,
     ability: AnimationType.Attack,
-    emote: AnimationType.Shoot
+    emote: AnimationType.RearUp
   },
   [Pkm.VIRIZION]: {
     attack: AnimationType.Attack,
-    ability: AnimationType.RearUp,
-    emote: AnimationType.Shoot
+    ability: AnimationType.Shoot,
+    emote: AnimationType.RearUp
   },
   [Pkm.COBALION]: {
     attack: AnimationType.Attack,
@@ -5118,6 +5145,17 @@ export const AnimationConfig: {
     attack: AnimationType.Attack,
     ability: AnimationType.Hurt,
     emote: AnimationType.Twirl
+  },
+  [Pkm.HISUI_VOLTORB]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Pose,
+    emote: AnimationType.Twirl
+  },
+  [Pkm.HISUI_ELECTRODE]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Hurt,
+    emote: AnimationType.Twirl,
+    shinyUnavailable: true
   },
   [Pkm.SLUGMA]: {
     attack: AnimationType.Shoot,
@@ -7434,5 +7472,53 @@ export const AnimationConfig: {
     attack: AnimationType.Attack,
     ability: AnimationType.Shoot,
     emote: AnimationType.Charge
+  },
+  [Pkm.INKAY]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Charge,
+    emote: AnimationType.Twirl
+  },
+  [Pkm.MALAMAR]: {
+    attack: AnimationType.Strike,
+    ability: AnimationType.Shoot,
+    emote: AnimationType.Charge
+  },
+  [Pkm.TIMBURR]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Swing,
+    emote: AnimationType.Pose
+  },
+  [Pkm.GURDURR]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Punch,
+    emote: AnimationType.RearUp,
+    shinyUnavailable: true
+  },
+  [Pkm.CONKELDURR]: {
+    attack: AnimationType.Attack,
+    ability: AnimationType.Strike,
+    emote: AnimationType.Shoot,
+    shinyUnavailable: true
+  },
+  [Pkm.PILLAR_WOOD]: {
+    attack: AnimationType.Idle,
+    ability: AnimationType.Idle,
+    emote: AnimationType.Idle,
+    shinyUnavailable: true,
+    noShadow: true
+  },
+  [Pkm.PILLAR_IRON]: {
+    attack: AnimationType.Idle,
+    ability: AnimationType.Idle,
+    emote: AnimationType.Idle,
+    shinyUnavailable: true,
+    noShadow: true
+  },
+  [Pkm.PILLAR_CONCRETE]: {
+    attack: AnimationType.Idle,
+    ability: AnimationType.Idle,
+    emote: AnimationType.Idle,
+    shinyUnavailable: true,
+    noShadow: true
   }
 }

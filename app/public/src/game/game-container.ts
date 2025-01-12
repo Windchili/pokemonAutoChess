@@ -131,6 +131,7 @@ class GameContainer {
       "wound",
       "enraged",
       "locked",
+      "blinded",
       "magicBounce",
       "tree"
     ]
@@ -207,6 +208,7 @@ class GameContainer {
       "manaBurnCount",
       "moneyCount",
       "amuletCoinCount",
+      "bottleCapCount",
       "attackCount",
       "tripleAttackCount",
       "upgradeCount",
@@ -385,7 +387,8 @@ class GameContainer {
           "hp",
           "atk",
           "ap",
-          "shiny"
+          "shiny",
+          "skill"
         ]
         fields.forEach((field) => {
           pokemon.listen(field, (value, previousValue) => {

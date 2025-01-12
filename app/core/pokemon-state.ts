@@ -89,7 +89,7 @@ export default abstract class PokemonState {
 
       let isAttackSuccessful = true
       let dodgeChance = target.dodge
-      if (pokemon.effects.has(Effect.GAS)) {
+      if (pokemon.status.blinded) {
         dodgeChance += 0.5
       }
       dodgeChance = max(0.9)(dodgeChance)
@@ -285,7 +285,7 @@ export default abstract class PokemonState {
       if (pokemon.items.has(Item.SILK_SCARF)) shield *= 1.3
 
       shield = Math.round(shield)
-      pokemon.shield += shield
+      pokemon.shield = min(0)(pokemon.shield + shield)
       if (caster && shield > 0) {
         if (pokemon.simulation.room.state.time < FIGHTING_PHASE_DURATION) {
           pokemon.simulation.room.broadcast(Transfer.POKEMON_HEAL, {
@@ -707,17 +707,11 @@ export default abstract class PokemonState {
       pokemon.effects.has(Effect.SPORE)
     ) {
       if (pokemon.grassHealCooldown - dt <= 0) {
-        let heal = pokemon.effects.has(Effect.SPORE)
+        const heal = pokemon.effects.has(Effect.SPORE)
           ? 30
           : pokemon.effects.has(Effect.GROWTH)
             ? 15
             : 7
-        if (
-          pokemon.effects.has(Effect.HYDRATATION) &&
-          pokemon.simulation.weather === Weather.RAIN
-        ) {
-          heal += 5
-        }
         pokemon.handleHeal(heal, pokemon, 0, false)
         pokemon.grassHealCooldown = 2000
         pokemon.simulation.room.broadcast(Transfer.ABILITY, {
