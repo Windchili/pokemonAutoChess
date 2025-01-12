@@ -588,15 +588,11 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
       const update = (target: { atkSpeed: number }) => {
         const currentAtkSpeedBonus = 100 * (target.atkSpeed / 0.75 - 1)
         const atkSpeedBonus = currentAtkSpeedBonus + value
-        if (this.status.allOutPummeling) {
-          target.atkSpeed = roundToNDigits(0.75 * (1 + atkSpeedBonus / 100), 2)
-        } else {
-          target.atkSpeed = clamp(
-            roundToNDigits(0.75 * (1 + atkSpeedBonus / 100), 2),
-            0.4,
-            2.5
-          )
-        }
+        target.atkSpeed = clamp(
+          roundToNDigits(0.75 * (1 + atkSpeedBonus / 100), 2),
+          0.4,
+          2.5
+        )
       }
       update(this)
       if (permanent && !this.isGhostOpponent) {
