@@ -56,7 +56,7 @@ import PokemonState from "./pokemon-state"
 import Simulation from "./simulation"
 import { DelayedCommand, SimulationCommand } from "./simulation-command"
 import { ItemEffects } from "./items"
-import { OnItemRemovedEffect, OnKillEffect } from "./effect"
+import { OnItemRemovedEffect, OnKillEffect, Effect as EffectClass } from "./effect"
 import { getPokemonData } from "../models/precomputed/precomputed-pokemon-data"
 
 export class PokemonEntity extends Schema implements IPokemonEntity {
@@ -118,7 +118,6 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
   shieldDamageTaken: number
   shieldDone: number
   flyingProtection = 0
-  growGroundTimer = 3000
   grassHealCooldown = 2000
   sandstormDamageTimer = 0
   leafStormDamageTimer = 0
@@ -127,6 +126,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
   isClone = false
   refToBoardPokemon: IPokemon
   commands = new Array<SimulationCommand>()
+  effectsSet = new Set<EffectClass>()
 
   constructor(
     pokemon: IPokemon,
@@ -143,7 +143,7 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
     pokemon.items.forEach((it) => {
       this.items.add(it)
     })
-    this.status = new Status()
+    this.status = new Status(simulation)
     this.count = new Count()
     this.simulation = simulation
 
@@ -641,8 +641,11 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
     const default_types = getPokemonData(this.name).types
     if (type && !default_types.includes(type)) {
       this.types.delete(type)
-      SynergyEffects[type].forEach((effect) => {
-        this.effects.delete(effect)
+      SynergyEffects[type].forEach((effectName) => {
+        this.effects.delete(effectName)
+        this.effectsSet.forEach((effect) => {
+          if (effect.origin === effectName) this.effectsSet.delete(effect)
+        })
       })
     }
 
@@ -952,18 +955,6 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
 
     if (this.name === Pkm.MINIOR) {
       this.addAttackSpeed(5, this, 1, false)
-    }
-
-    if (this.name === Pkm.MORPEKO) {
-      target.status.triggerParalysis(2000, target, this)
-    }
-
-    if (this.name === Pkm.MORPEKO_HANGRY) {
-      target.status.triggerWound(4000, target, this)
-    }
-
-    if (this.status.allOutPummeling) {
-      target.status.triggerLocked(1000, target)
     }
 
     if (this.passive === Passive.DREAM_CATCHER && target.status.sleep) {
@@ -1708,6 +1699,14 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
     if (this.passive === Passive.GRIM_NEIGH) {
       this.addAbilityPower(30, this, 0, false)
     }
+
+    if (
+      this.player &&
+      this.simulation.room.state.specialGameRule === SpecialGameRule.BLOOD_MONEY
+    ) {
+      this.player.addMoney(1, true, this)
+      this.count.moneyCount += 1
+    }
   }
 
   // called after death (does not proc if resurection)
@@ -2037,6 +2036,18 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
     ) {
       this.player.items.push(Item.BERRY_JUICE)
     }
+  }
+
+  transferAbility(name: Ability | string) {
+    this.simulation.room.broadcast(Transfer.ABILITY, {
+      id: this.simulation.id,
+      skill: name,
+      positionX: this.positionX,
+      positionY: this.positionY,
+      targetX: this.targetX,
+      targetY: this.targetY,
+      orientation: this.orientation
+    })
   }
 }
 

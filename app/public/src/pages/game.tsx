@@ -677,6 +677,7 @@ export default function Game() {
           "totalMoneyEarned",
           "totalPlayerDamageDealt",
           "eggChance",
+          "goldenEggChance",
           "wildChance"
         ]
 

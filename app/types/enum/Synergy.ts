@@ -34,7 +34,7 @@ export enum Synergy {
   AMORPHOUS = "AMORPHOUS"
 }
 
-export const SynergyEffects: { [key in Synergy]: Effect[] } = Object.freeze({
+export const SynergyEffects: { [key in Synergy]: readonly Effect[] } = {
   [Synergy.NORMAL]: [
     Effect.STAMINA,
     Effect.STRENGTH,
@@ -155,4 +155,4 @@ export const SynergyEffects: { [key in Synergy]: Effect[] } = Object.freeze({
     Effect.BERSERK
   ],
   [Synergy.AMORPHOUS]: [Effect.FLUID, Effect.SHAPELESS, Effect.ETHEREAL]
-})
+} as const
