@@ -511,8 +511,6 @@ export class Swablu extends Pokemon {
   maxPP = 100
   range = 2
   skill = Ability.HYPER_VOICE
-  zmove = Ability.ETERNAL_ARIA
-  zmovePP = 50
   attackSprite = AttackSprite.DRAGON_RANGE
   additional = true
 }
@@ -529,8 +527,6 @@ export class Altaria extends Pokemon {
   maxPP = 100
   range = 2
   skill = Ability.HYPER_VOICE
-  zmove = Ability.ETERNAL_ARIA
-  zmovePP = 50
   attackSprite = AttackSprite.DRAGON_RANGE
   additional = true
 }
@@ -660,8 +656,6 @@ export class Buneary extends Pokemon {
   maxPP = 80
   range = 1
   skill = Ability.HIGH_JUMP_KICK
-  zmove = Ability.ALL_OUT_PUMMELING
-  zmovePP = 80
   attackSprite = AttackSprite.FIGHTING_MELEE
   regional = true
 }
@@ -678,8 +672,6 @@ export class Lopunny extends Pokemon {
   maxPP = 80
   range = 1
   skill = Ability.HIGH_JUMP_KICK
-  zmove = Ability.ALL_OUT_PUMMELING
-  zmovePP = 80
   attackSprite = AttackSprite.FIGHTING_MELEE
   regional = true
 }
@@ -15637,6 +15629,8 @@ export class Timburr extends Pokemon {
   maxPP = 120
   range = 1
   skill = Ability.COLUMN_CRUSH
+  zmove = Ability.ALL_OUT_PUMMELING
+  zmovePP = 100
   passive = Passive.PILLAR
   attackSprite = AttackSprite.FIGHTING_MELEE
   onChangePosition(x, y, player) {
@@ -15660,6 +15654,8 @@ export class Gurdurr extends Pokemon {
   maxPP = 120
   range = 1
   skill = Ability.COLUMN_CRUSH
+  zmove = Ability.ALL_OUT_PUMMELING
+  zmovePP = 100
   passive = Passive.PILLAR
   attackSprite = AttackSprite.FIGHTING_MELEE
   onChangePosition(x, y, player) {
@@ -15682,6 +15678,8 @@ export class Conkeldurr extends Pokemon {
   maxPP = 120
   range = 1
   skill = Ability.COLUMN_CRUSH
+  zmove = Ability.ALL_OUT_PUMMELING
+  zmovePP = 100
   passive = Passive.PILLAR
   attackSprite = AttackSprite.FIGHTING_MELEE
   onChangePosition(x, y, player) {

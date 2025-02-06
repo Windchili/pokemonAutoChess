@@ -878,6 +878,45 @@ export class PokemonEntity extends Schema implements IPokemonEntity {
       })
     }
 
+    if (this.status.allOutPummeling && totalDamage > 0) {
+      const dmgMultiplier = [0.3,0.6,1.0][this.stars] ?? 100 
+      const cells = board.getAdjacentCells(target.positionX, target.positionY)
+      const candidateTargets = cells
+        .filter((cell) => cell.value && this.team != cell.value.team)
+        .map((cell) => cell.value!)
+
+        candidateTargets.forEach((target) => {      
+          if (physicalDamage > 0) {
+            target.handleDamage({
+              damage: Math.ceil(dmgMultiplier * physicalDamage),
+              board,
+              attackType: AttackType.PHYSICAL,
+              attacker: this,
+              shouldTargetGainMana: true
+            })
+          }
+          if (specialDamage > 0) {
+            target.handleDamage({
+              damage: Math.ceil(dmgMultiplier * specialDamage),
+              board,
+              attackType: AttackType.SPECIAL,
+              attacker: this,
+              shouldTargetGainMana: true
+            })
+          }
+          if (trueDamage > 0) {
+            target.handleDamage({
+              damage: Math.ceil(dmgMultiplier * trueDamage),
+              board,
+              attackType: AttackType.TRUE,
+              attacker: this,
+              shouldTargetGainMana: true
+            })
+          }
+        })
+      
+    }
+
     if (this.items.has(Item.MANA_SCARF)) {
       this.addPP(MANA_SCARF_MANA, this, 0, false)
     }

@@ -3699,7 +3699,6 @@ export class IcicleCrashStrategy extends AbilityStrategy {
     if (pokemon.stars === 3) {
       damage = 80
     }
-    pokemon.status.triggerVibrating()
 
     board
       .getAdjacentCells(target.positionX, target.positionY, true)
@@ -11598,19 +11597,11 @@ export class AllOutPummelingStrategy extends AbilityStrategy {
     crit: boolean
   ) {
     super.process(pokemon, state, board, target, crit)
-    const duration = Math.round(7000 * (1 + pokemon.ap / 100))
 
-    const atkSpeedBuff = [75, 125, 250][pokemon.stars - 1] ?? 250
-    const critState = crit
+    const atkSpeedBuff = [20,40,60][pokemon.stars - 1] ?? 60
+    pokemon.addAttackSpeed(atkSpeedBuff, pokemon, 1, crit, false) 
 
-    pokemon.status.triggerAllOutPummeling(duration)
-    pokemon.addAttackSpeed(atkSpeedBuff, pokemon, 0, critState, false)
-    
-    pokemon.commands.push(
-      new DelayedCommand(() => {
-        pokemon.addAttackSpeed(-atkSpeedBuff, pokemon, 0, critState, false)
-      }, duration)
-    )   
+    pokemon.status.triggerAllOutPummeling()
   }
 }
 

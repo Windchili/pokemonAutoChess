@@ -98,6 +98,7 @@ class GameContainer {
   initializePokemon(pokemon: PokemonEntity, simulation: Simulation) {
     this.gameScene?.battle?.addPokemonEntitySprite(simulation.id, pokemon)
     const fields: NonFunctionPropNames<Status>[] = [
+      "allOutPummeling",
       "armorReduction",
       "burn",
       "charm",

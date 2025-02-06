@@ -237,8 +237,6 @@ export default class BattleManager {
         } else {
           pkm.removeParalysis()
         }
-      } else if (field === "vibrating") {
-        pkm.vibrate()
       } else if (field === "pokerus") {
         if (pokemon.status.pokerus) {
           pkm.addPokerus()

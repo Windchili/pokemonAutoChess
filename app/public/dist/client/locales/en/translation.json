@@ -1739,7 +1739,7 @@
     "GENESIS_SUPERNOVA": "Spawn [5,10,15] $t(pkm.SOLOSIS), which despawn after [5,SP=0.5] seconds.",
     "SUPREME_OVERLORD_SLASH": "Charge a devastating slash for [7,11,14] seconds, then release the attack, dealing [30,60,90,SP] TRUE to all enemies. A countdown is displayed next to the Z-Crystal.",
     "ETERNAL_ARIA": "Send a note in the Up-Right direction, bouncing against walls. Restore [5,10,15,SP] PP to allies it touches, and deal [15,20,25,SP] SPECIAL to enemies it hits.",
-    "ALL_OUT_PUMMELING": "For [7,SP] seconds, remove the user's ATK_SPEED limit, give the user [75,125,250]% ATK_SPEED, and deal 1 second of LOCKED with basic attacks.",
+    "ALL_OUT_PUMMELING": "Gain [50,SP]% ATK_SPEED. Summon [1,2,3] Pillars and gain [100,200,300] PP.",
     "BONE_ARMOR": "Flies to the weakest enemy inflicting [20,40,80,SP] SPECIAL, healing for the damage dealt. If the target is KO'd, recover its bones to make armor, gaining [2,4,6] DEF and SPE_DEF.",
     "RAGE": "Get RAGE status for 3 seconds and gain [10,SP]% base ATK for each 10% of max HP missing",
     "BRICK_BREAK": "Deal [150,SP]% of ATK as TRUE. Breaks target's PROTECT and Magic Bounce.",

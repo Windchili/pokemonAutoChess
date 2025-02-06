@@ -638,7 +638,6 @@ export interface IStatus {
   resurection: boolean
   resurecting: boolean
   paralysis: boolean
-  vibrating: boolean
   pokerus: boolean
   possessed: boolean
   locked: boolean

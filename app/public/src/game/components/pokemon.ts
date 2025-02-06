@@ -98,7 +98,6 @@ export default class PokemonSprite extends DraggableObject {
   freeze: GameObjects.Sprite | undefined
   confusion: GameObjects.Sprite | undefined
   paralysis: GameObjects.Sprite | undefined
-  vibrating: GameObjects.Sprite | undefined
   pokerus: GameObjects.Sprite | undefined
   possessed: GameObjects.Sprite | undefined
   locked: GameObjects.Sprite | undefined
@@ -745,20 +744,6 @@ export default class PokemonSprite extends DraggableObject {
       this.remove(this.paralysis, true)
       this.paralysis = undefined
     }
-  }
-
-  vibrate() {
-    
-    function xAdd(pokemon: { setX: Function, x: number }) {
-      pokemon.setX(pokemon.x + 200)
-    }
-    function xMinus(pokemon: { setX: Function, x: number }) {
-      pokemon.setX(pokemon.x - 200)
-    }
-    xAdd(this)
-    setTimeout(() => {
-      xMinus(this);  // Call xChange after 500ms
-    }, 500) 
   }
 
   addPokerus() {

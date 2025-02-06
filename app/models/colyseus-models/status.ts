@@ -28,7 +28,7 @@ export default class Status extends Schema implements IStatus {
   @type("boolean") resurection = false
   @type("boolean") resurecting = false
   @type("boolean") paralysis = false
-  @type("boolean") vibrating = false
+  @type("boolean") allOutPummeling = false
   @type("boolean") pokerus = false
   @type("boolean") possessed = false
   @type("boolean") delayedKo = false
@@ -1000,11 +1000,7 @@ export default class Status extends Schema implements IStatus {
     }
   }
 
-  triggerVibrating() {
-    if (!this.vibrating) {
-      this.vibrating
-    }
-  }
+
 
   healParalysis(pkm: PokemonEntity) {
     if (this.paralysis) {
@@ -1048,6 +1044,10 @@ export default class Status extends Schema implements IStatus {
     } else {
       this.flinchCooldown -= dt
     }
+  }
+
+  triggerAllOutPummeling() {
+    this.allOutPummeling = true
   }
 
   triggerSpikeArmor(timer: number) {
