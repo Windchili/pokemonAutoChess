@@ -338,6 +338,9 @@ export default abstract class PokemonState {
       damage *= 2
     }
 
+    if (pokemon.life === 0 && pokemon.status.possessed) {
+      pokemon.status.possessedCooldown = 0
+    }
     if (pokemon.life === 0) {
       death = true
     } else if (pokemon.status.protect || pokemon.status.skydiving) {

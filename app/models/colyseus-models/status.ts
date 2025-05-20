@@ -3,13 +3,14 @@ import Board from "../../core/board"
 import { PokemonEntity } from "../../core/pokemon-entity"
 import { IPokemonEntity, ISimulation, IStatus, Transfer } from "../../types"
 import { EffectEnum } from "../../types/enum/Effect"
-import { AttackType } from "../../types/enum/Game"
+import { AttackType, Team } from "../../types/enum/Game"
 import { Item } from "../../types/enum/Item"
 import { Passive } from "../../types/enum/Passive"
 import { Weather } from "../../types/enum/Weather"
 import { count } from "../../utils/array"
 import { max } from "../../utils/number"
 import { FIGHTING_PHASE_DURATION } from "../../types/Config"
+import { logger } from "../../utils/logger"
 
 export default class Status extends Schema implements IStatus {
   @type("boolean") burn = false
@@ -25,6 +26,7 @@ export default class Status extends Schema implements IStatus {
   @type("boolean") resurecting = false
   @type("boolean") paralysis = false
   @type("boolean") pokerus = false
+  @type("boolean") possessed = false
   @type("boolean") locked = false
   @type("boolean") blinded = false
   @type("boolean") armorReduction = false
@@ -74,6 +76,7 @@ export default class Status extends Schema implements IStatus {
   resurectingCooldown = 0
   curseCooldown = 0
   pokerusCooldown = 2500
+  possessedCooldown = 0
   lockedCooldown = 0
   blindCooldown = 0
   enrageDelay = 35000
@@ -94,6 +97,7 @@ export default class Status extends Schema implements IStatus {
     this.confusionCooldown = 0
     this.woundCooldown = 0
     this.paralysisCooldown = 0
+    this.possessedCooldown = 0
     this.charmCooldown = 0
     this.flinchCooldown = 0
     this.armorReductionCooldown = 0
@@ -119,7 +123,8 @@ export default class Status extends Schema implements IStatus {
       this.armorReduction ||
       this.curse ||
       this.locked ||
-      this.blinded
+      this.blinded ||
+      this.possessed
     )
   }
 
@@ -190,6 +195,10 @@ export default class Status extends Schema implements IStatus {
 
     if (this.pokerus) {
       this.updatePokerus(dt, pokemon, board)
+    }
+
+    if (this.possessed) {
+      this.updatePossessed(dt, pokemon)
     }
 
     if (this.armorReduction) {
@@ -938,6 +947,69 @@ export default class Status extends Schema implements IStatus {
       this.pokerusCooldown = 2500
     } else {
       this.pokerusCooldown -= dt
+    }
+  }
+
+  triggerPossessed(duration: number, pkm: PokemonEntity) {
+    if (
+      !this.runeProtect
+    ) {
+      let pkmTeam = pkm.simulation.blueTeam
+      if (pkm.team === Team.RED_TEAM) {
+        pkmTeam = pkm.simulation.redTeam
+      }
+      
+      if (1 !== pkmTeam.size) {
+        this.possessed = true
+        duration = this.applyAquaticReduction(duration, pkm)
+
+        if (pkm.team === Team.BLUE_TEAM) {
+          pkm.team = Team.RED_TEAM
+        } else {
+          pkm.team = Team.BLUE_TEAM
+        }
+
+        pkm.toMovingState() // force retargetting
+
+        if (duration > this.possessedCooldown) {
+          this.possessedCooldown = Math.round(duration)
+        }
+      }
+    }
+  }
+
+  updatePossessed(dt: number, pkm: PokemonEntity) {
+    let possessedCount = 0
+    let pkmTeam = pkm.simulation.blueTeam
+    let otherTeam = pkm.simulation.redTeam
+    if (pkm.team === Team.RED_TEAM) {
+      pkmTeam = pkm.simulation.redTeam
+      otherTeam = pkm.simulation.blueTeam
+    }
+
+    otherTeam.forEach((pokemon) => {
+      if (pokemon.status.possessed) {
+        possessedCount++
+      }
+    })
+
+    if (
+      this.possessedCooldown - dt <= 0 ||
+      possessedCount === otherTeam.size
+    ) {
+      this.possessed = false
+
+      if (pkm.team === Team.BLUE_TEAM) {
+        pkm.team = Team.RED_TEAM
+      } else {
+        pkm.team = Team.BLUE_TEAM
+      }
+
+      pkm.toMovingState() // force retargeting
+      pkm.toIdleState()
+      
+    } else {
+      this.possessedCooldown -= dt
     }
   }
 

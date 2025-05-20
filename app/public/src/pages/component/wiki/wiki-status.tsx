@@ -21,6 +21,7 @@ export default function WikiStatus() {
     Status.LOCKED,
     Status.CHARM,
     Status.BLINDED,
+    Status.POSSESSED,
     Status.PROTECT,
     Status.RESURECTION,
     Status.RUNE_PROTECT,

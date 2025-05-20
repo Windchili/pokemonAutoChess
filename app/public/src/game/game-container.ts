@@ -133,6 +133,7 @@ class GameContainer {
       "grassField",
       "paralysis",
       "pokerus",
+      "possessed",
       "poisonStacks",
       "protect",
       "skydiving",

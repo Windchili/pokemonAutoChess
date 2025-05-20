@@ -101,6 +101,7 @@ export default class PokemonSprite extends DraggableObject {
   confusion: GameObjects.Sprite | undefined
   paralysis: GameObjects.Sprite | undefined
   pokerus: GameObjects.Sprite | undefined
+  possessed: GameObjects.Sprite | undefined
   locked: GameObjects.Sprite | undefined
   blinded: GameObjects.Sprite | undefined
   armorReduction: GameObjects.Sprite | undefined
@@ -853,6 +854,25 @@ export default class PokemonSprite extends DraggableObject {
     if (this.pokerus) {
       this.remove(this.pokerus, true)
       this.pokerus = undefined
+    }
+  }
+
+  addPossessed() {
+    if (!this.possessed) {
+      this.sprite.setAlpha(0.6)
+      this.possessed = this.scene.add
+        .sprite(0, 0, "status", "POSSESSED/000.png")
+        .setScale(2)
+      this.possessed.anims.play("POSSESSED")
+      this.add(this.possessed)
+    }
+  }
+
+  removePossessed() {
+    if (this.possessed) {
+      this.sprite.setAlpha(1)
+      this.remove(this.possessed, true)
+      this.possessed = undefined
     }
   }
 

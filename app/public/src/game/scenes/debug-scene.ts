@@ -229,6 +229,7 @@ export class DebugScene extends Phaser.Scene {
       this.pokemon.removeResurection()
       this.pokemon.removeParalysis()
       this.pokemon.removePokerus()
+      this.pokemon.removePossessed()
       this.pokemon.removeLocked()
       this.pokemon.removeBlinded()
       this.pokemon.removeArmorReduction()
@@ -281,6 +282,9 @@ export class DebugScene extends Phaser.Scene {
       }
       if (status == Status.POKERUS) {
         this.pokemon.addPokerus()
+      }
+      if (status == Status.POSSESSED) {
+        this.pokemon.addPossessed()
       }
       if (status == Status.ARMOR_BREAK) {
         this.pokemon.addArmorReduction()
